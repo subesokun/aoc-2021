@@ -2,12 +2,17 @@ const fs = require('fs')
 
 // tag::star1[]
 /**
- * @param {string} edge 
+ * @param {string} edge
+ * @returns {boolean}
  */
 function isSmallCave(edge) {
     return edge === edge.toLocaleLowerCase()
 }
 
+/**
+ * @param {string[]} traversedPath 
+ * @returns {*}
+ */
 function simpleFilterGenerator(traversedPath) {
     return (edge) => {
         return !isSmallCave(edge) || !traversedPath.includes(edge)
@@ -15,7 +20,6 @@ function simpleFilterGenerator(traversedPath) {
 }
 
 /**
- * 
  * @param {Map<string,Array.<string>>} edgeMap
  * @param {string[]} traversedPath
  * @param {*} edgeFilterGenerator
@@ -49,7 +53,7 @@ function runSolutionPuzzleOne(edgeMap) {
 // tag::star2[]
 /**
  * @param {string[]} traversedPath 
- * @returns {string[]}
+ * @returns {*}
  */
 function complexFilterGenerator(traversedPath) {
     const maxSmallCaveVisitCount = Math.max(...traversedPath.filter(isSmallCave).map(v => traversedPath.filter(vv => vv === v).length))
@@ -59,7 +63,7 @@ function complexFilterGenerator(traversedPath) {
 }
 
 /**
- * @param {Map<string,Array.<string>>} edgeMap 
+ * @param {Map<string,string[]>} edgeMap 
  */
 function runSolutionPuzzleTwo(edgeMap) {
     const paths = findDistinctPaths(edgeMap, ['start'], complexFilterGenerator)
@@ -73,7 +77,7 @@ const pathList = fs.readFileSync('input.txt')
     .toString()
     .split('\n')
     .map(line => line.split('-'))
-    /** @type {Map<string,Array.<string>>} */
+    /** @type {Map<string,string[]>} */
 const edgeMap = new Map()
 for (const path of pathList) {
     if (path[1] !== 'start') {
