@@ -270,6 +270,90 @@
 </li>
 </ul>
 </li>
+<li><a href="#_day_11_python">Day 11: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_11_dumbo_octopus">AoC21-11: Dumbo Octopus</a>
+<ul class="sectlevel4">
+<li><a href="#_info_11">Info</a></li>
+<li><a href="#_howto_11">HowTo</a></li>
+<li><a href="#_learned_today_11">Learned today</a></li>
+<li><a href="#_source_11">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_12_python">Day 12: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_12_passage_pathing">AoC21-12: Passage Pathing</a>
+<ul class="sectlevel4">
+<li><a href="#_info_12">Info</a></li>
+<li><a href="#_howto_12">HowTo</a></li>
+<li><a href="#_learned_today_12">Learned today</a></li>
+<li><a href="#_source_12">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_13_python">Day 13: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_13_transparent_origami">AoC21-13: Transparent Origami</a>
+<ul class="sectlevel4">
+<li><a href="#_info_13">Info</a></li>
+<li><a href="#_howto_13">HowTo</a></li>
+<li><a href="#_learned_today_13">Learned today</a></li>
+<li><a href="#_source_13">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_14_python">Day 14: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_14_extended_polymerization">AoC21-14: Extended Polymerization</a>
+<ul class="sectlevel4">
+<li><a href="#_info_14">Info</a></li>
+<li><a href="#_howto_14">HowTo</a></li>
+<li><a href="#_learned_today_14">Learned today</a></li>
+<li><a href="#_source_14">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_15_python">Day 15: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_15_chiton">AoC21-15: Chiton</a>
+<ul class="sectlevel4">
+<li><a href="#_info_15">Info</a></li>
+<li><a href="#_howto_15">HowTo</a></li>
+<li><a href="#_learned_today_15">Learned today</a></li>
+<li><a href="#_source_15">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_16_python">Day 16: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_16_packet_decoder">AoC21-16: Packet Decoder</a>
+<ul class="sectlevel4">
+<li><a href="#_info_16">Info</a></li>
+<li><a href="#_howto_16">HowTo</a></li>
+<li><a href="#_learned_today_16">Learned today</a></li>
+<li><a href="#_source_16">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_17_python">Day 17: python</a>
+<ul class="sectlevel3">
+<li><a href="#_aoc21_17_trick_shot">AoC21-17: Trick Shot</a>
+<ul class="sectlevel4">
+<li><a href="#_info_17">Info</a></li>
+<li><a href="#_howto_17">HowTo</a></li>
+<li><a href="#_learned_today_17">Learned today</a></li>
+<li><a href="#_source_17">Source</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1539,6 +1623,1127 @@ def main():
         scores.append(count_brackets(line))
     scores.sort()
     star2 = scores[round(len(scores)/2)-1]
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day11" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_11_python"><a class="anchor" href="#_day_11_python"></a><a class="link" href="#_day_11_python">Day 11: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_11_dumbo_octopus"><a class="anchor" href="#_aoc21_11_dumbo_octopus"></a><a class="link" href="#_aoc21_11_dumbo_octopus">AoC21-11: Dumbo Octopus</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/11" class="bare">https://adventofcode.com/2021/day/11</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_11"><a class="anchor" href="#_info_11"></a><a class="link" href="#_info_11">Info</a></h5>
+<div class="paragraph">
+<p>Christmas lights had to be switched off for bioluminescently flashing dumbo octopus'. Navigate by the flashing from the squids.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): Squids gain 1 energy per step, flash at energy level &gt;9 and also charge adjacent 8 squids, which might then also flash in single step. Calculate number of flashes in 100 steps.</p>
+</li>
+<li>
+<p>Star2 (**): Iterate squid game further until all squids flash together first time in a single step.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_11"><a class="anchor" href="#_howto_11"></a><a class="link" href="#_howto_11">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and prepocessed into list of ints.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Iterate single step. Small array, no need for recursion. Spread flash to adjacents and mark flashed as 0. Important: Stick to 0 level after flashing.</p>
+</li>
+<li>
+<p>Star2: Continue iterations until first time flash count equals all squids.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_11"><a class="anchor" href="#_learned_today_11"></a><a class="link" href="#_learned_today_11">Learned today</a></h5>
+<div class="paragraph">
+<p>Straightforward. Some hiccups like count step as 195 or 196, but all manageable with the test input :)</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_11"><a class="anchor" href="#_source_11"></a><a class="link" href="#_source_11">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see description.adoc
+
+import io
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+        return_list = [[int(digit) for digit in line] for line in local_list]
+        return return_list
+
+
+def do_single_step(energy_levels):
+    ''' Iterate energy levels through single step
+        Return new energy_levels, number of flashes (energy levels &gt;9), bool if flash count equals all squids
+    '''
+    flashes = 0
+    depth = len(energy_levels)
+    width = len(energy_levels[0])
+    energy_levels = [[energy+1 for energy in line] for line in energy_levels]
+    old_flashes = -1
+    while (flashes &gt; old_flashes):
+        old_flashes = flashes
+        for x in range(depth):
+            for y in range(width):
+                if (energy_levels[x][y]&gt;9):
+                    flashes +=1
+                    energy_levels[x][y] = 0
+                    adjacents = [(x-1,y+1),(x,y+1),(x+1,y+1),(x-1,y),(x+1,y),(x-1,y-1),(x,y-1),(x+1,y-1)]
+                    for adj in adjacents:
+                        if ((0 &lt;= adj[0] &lt; depth) and (0 &lt;= adj[1] &lt; width)):
+                            if (energy_levels[adj[0]][adj[1]] != 0):
+                                energy_levels[adj[0]][adj[1]] += 1
+    return energy_levels, flashes, flashes == depth*width
+
+
+def main():
+    daily_list = read_daily_input('input11.txt')
+    sum_flashes = 0
+    star2 = 0
+    for i in range(100):
+        daily_list, flash_count, is_sync = do_single_step(daily_list)
+        sum_flashes += flash_count
+        if (is_sync and (star2 == 0)):
+            star2 = i+1
+    star1 = sum_flashes
+    print(f"Result (*): {star1}")
+    if (star2 == 0):
+        i = 100
+        is_sync = False
+        while not is_sync:
+            daily_list, flash_count, is_sync = do_single_step(daily_list)
+            i += 1
+        star2 = i
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day12" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_12_python"><a class="anchor" href="#_day_12_python"></a><a class="link" href="#_day_12_python">Day 12: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_12_passage_pathing"><a class="anchor" href="#_aoc21_12_passage_pathing"></a><a class="link" href="#_aoc21_12_passage_pathing">AoC21-12: Passage Pathing</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/12" class="bare">https://adventofcode.com/2021/day/12</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_12"><a class="anchor" href="#_info_12"></a><a class="link" href="#_info_12">Info</a></h5>
+<div class="paragraph">
+<p>Map cave system with small (lowercase) and large (highercase) caves</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): How many distinct paths through most caves there are without visiting any smaller case twice?</p>
+</li>
+<li>
+<p>Star2 (**): How many distinct paths through most caves there are without visiting A SINGLE smaller case twice?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_12"><a class="anchor" href="#_howto_12"></a><a class="link" href="#_howto_12">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and prepocessed into list of caves and list of links.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Recursively run from cave through all cave&#8217;s links, starting with 'start', ending with 'end'. Discard small caves if already in path. Remove double paths and those not ending in 'end' (coming from spawning a new path for every link, as my other approaches did not run reliably through all options&#8230;&#8203; 🙄)</p>
+</li>
+<li>
+<p>Star2: Repeat Star1, only this time allowing a small cave to spawn a new path twice, if no other small caves are already twice in path. Takes a while with my anti-optimized approach&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_12"><a class="anchor" href="#_learned_today_12"></a><a class="link" href="#_learned_today_12">Learned today</a></h5>
+<div class="paragraph">
+<p>Got reminded, that recursive without practice and template can be a long series of pitfalls (especially in a cave system 😉). Plus once more: Read the task thoroughly, as my VS Code crashed while trying to run through all paths with any number of small caves allowed twice&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_12"><a class="anchor" href="#_source_12"></a><a class="link" href="#_source_12">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import io
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+        connection_list = [item.split('-') for item in local_list]
+        caves = set([item for sublist in connection_list for item in sublist])
+        connectors = dict()
+        for cave in caves:
+            for connection in connection_list:
+                if cave == 'end':
+                    continue
+                if cave in connection:
+                    if not (cave in connectors.keys()):
+                        connectors[cave] = []
+                    for cv in connection:
+                        if ((cv != cave) and (cv != 'start')):
+                            connectors[cave].append(cv)
+        return caves, connectors
+
+
+def find_paths(caves, links, star = 1):
+    ''' find number of paths from 'start' to 'end' by recursively iterating
+        star1: visit small caves (lowercase) only once
+        star2: visit single small cave twice
+    '''
+    paths = list()
+
+    def go_step(path, new_cave):
+        path.append(new_cave)
+        if new_cave == 'end':
+            return
+        for cave in links[new_cave]:
+            if (all(c.islower() for c in cave) and (cave in path)):
+                if (star == 1):
+                    continue
+                lowies = [cv for cv in path if all(c.islower() for c in cv)]
+                if (any(path.count(cv)==2 for cv in lowies)):
+                    continue
+            paths.append(path.copy())
+            go_step(paths[-1], cave)
+
+    paths.append([])
+    go_step(paths[-1], 'start')
+    paths = [p for p in paths if p[-1] == 'end']
+    paths = [p for i,p in enumerate(paths) if p not in paths[i+1:]]
+    # pprint(paths)
+    return paths
+
+
+def main():
+    caves, links = read_daily_input('input12.txt')
+    star1 = len(find_paths(caves, links))
+    print(f"Result (*): {star1}")
+    print("Path finding for Star2 will take some time...")
+    star2 = len(find_paths(caves, links, 2))
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day13" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_13_python"><a class="anchor" href="#_day_13_python"></a><a class="link" href="#_day_13_python">Day 13: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_13_transparent_origami"><a class="anchor" href="#_aoc21_13_transparent_origami"></a><a class="link" href="#_aoc21_13_transparent_origami">AoC21-13: Transparent Origami</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/13" class="bare">https://adventofcode.com/2021/day/13</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_13"><a class="anchor" href="#_info_13"></a><a class="link" href="#_info_13">Info</a></h5>
+<div class="paragraph">
+<p>Get code by setting dots on transparent paper and folding it.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): How many visible dots on sheet after first fold</p>
+</li>
+<li>
+<p>Star2 (**): What 8 letters are visible after all folds</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_13"><a class="anchor" href="#_howto_13"></a><a class="link" href="#_howto_13">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and prepocessed into sheet with '1' for dot and '0' for transparent, as well as list of folds.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Iterate single fold and count visible dots.</p>
+</li>
+<li>
+<p>Star2: Iterate all folds and display the eight letter from the dots. Be careful to move the right lines - move in both directions from the folding line. Otherwise the output will be illegible&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_13"><a class="anchor" href="#_learned_today_13"></a><a class="link" href="#_learned_today_13">Learned today</a></h5>
+<div class="paragraph">
+<p>Took some time to find the error (garbled characters). Did not iterate from foldline first, but from the outside, leading to a pixel shift on some folds&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_13"><a class="anchor" href="#_source_13"></a><a class="link" href="#_source_13">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import math
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+    coordinates = [item.split(',') for item in local_list[:local_list.index('')]]
+    fold_instructions = [item.split()[2] for item in local_list[local_list.index('')+1:]]
+    return coordinates, fold_instructions
+
+
+def preprocess_input(coordinates_list, fold_instructions):
+    ''' Preprocess daily input
+        Put coordinates into sheet, parse fold_instructions
+        Return sheet with dots, fold lines
+        ! BEWARE: 2d list 'sheet' is flipped &amp; rotated vs. instructions
+    '''
+    coordinates = [[int(x), int(y)] for (x, y) in coordinates_list]
+    max_x = max([x for (x, __) in coordinates])
+    max_y = max([y for (__, y) in coordinates])
+    sheet = [[0 for y in range(max_y+1)] for x in range(max_x+1)]
+    for point in coordinates:
+        sheet[point[0]][point[1]] = 1
+    folds=[[axis, int(coord)] for (axis, coord) in (item.split('=') for item in fold_instructions)]
+    return sheet, folds
+
+
+def transpose_list(any_list):
+    ''' Transpose list for analysis
+    '''
+    return [[row[i] for row in any_list] for i in range(len(any_list[0]))]
+
+
+def fold_sheet(sheet, fold_axis, fold_coord):
+    ''' "Fold" sheet along axis on line coord.
+        superpose inverted second half with first half and discard second half
+        Return new sheet
+        ! BEWARE: 2d list 'sheet' is flipped &amp; rotated vs. instructions
+    '''
+    max_row = len(sheet)
+    max_col = len(sheet[0])
+    if fold_axis == 'y':  # fold along col
+        for row in range(max_row):
+            for i, col in enumerate(range(fold_coord+1, max_col)):
+                sheet[row][fold_coord-1-i] = 1 if (sheet[row][fold_coord-1-i]+sheet[row][col] &gt; 0) else 0
+        folded_sheet = [item[:fold_coord] for item in sheet]
+        return folded_sheet
+    else:  # fold along row
+        for i, row in enumerate(range(fold_coord+1, max_row)):
+            for col in range(max_col):
+                sheet[fold_coord-1-i][col] = 1 if (sheet[fold_coord-1-i][col]+sheet[row][col] &gt; 0) else 0
+        folded_sheet = [item for item in sheet[:fold_coord]]
+        return folded_sheet
+
+
+
+def main():
+    coordinates, fold_instructions = read_daily_input('input13.txt')
+    sheet, folds = preprocess_input(coordinates, fold_instructions)
+    first_folded_sheet = fold_sheet(sheet, folds[0][0], folds[0][1])
+    star1 = sum([sum(row) for row in first_folded_sheet])
+    print(f"Result (*): {star1}")
+    fully_folded_sheet = sheet.copy()
+    for fold in folds:
+        fully_folded_sheet = fold_sheet(fully_folded_sheet, fold[0], fold[1])
+    star2_list = transpose_list(fully_folded_sheet)
+    for row in star2_list:
+        print(''.join(['█' if c == 1 else ' ' for c in row]))
+    star2 = 's. above'
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day14" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_14_python"><a class="anchor" href="#_day_14_python"></a><a class="link" href="#_day_14_python">Day 14: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_14_extended_polymerization"><a class="anchor" href="#_aoc21_14_extended_polymerization"></a><a class="link" href="#_aoc21_14_extended_polymerization">AoC21-14: Extended Polymerization</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/14" class="bare">https://adventofcode.com/2021/day/14</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_14"><a class="anchor" href="#_info_14"></a><a class="link" href="#_info_14">Info</a></h5>
+<div class="paragraph">
+<p>Polymerization to protect the outer sub shell. Provided: initial polymer string and reactions (char pairs into which new char is inserted)</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): 10 polymerization steps: highest element number - lowest element number</p>
+</li>
+<li>
+<p>Star2 (**): 40 polymerization steps: highest element number - lowest element number</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_14"><a class="anchor" href="#_howto_14"></a><a class="link" href="#_howto_14">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and prepocessed into the polymer as well as a dict of reactions (e.g. 'AB': 'C').</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Classic string action. 10 iterations work well. Easy to process and easy to count&#8230;&#8203;</p>
+</li>
+<li>
+<p>Star2: 40 iterations do not fit into RAM. New approach: Count and manage letter pairs. Worked well, except for own stupidity.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_14"><a class="anchor" href="#_learned_today_14"></a><a class="link" href="#_learned_today_14">Learned today</a></h5>
+<div class="paragraph">
+<p>Had all afternoon that feeling, that I just need to find the little glitch, as test data worked, but not real input. But I did not test the 40cyc test data&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Only much too late found the error: no reset after the first 10 cycles to check for match with star1 -&#8594; ran 50 cycles 🤦‍♂️</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_14"><a class="anchor" href="#_source_14"></a><a class="link" href="#_source_14">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import math
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+    initial_polymer = local_list[0]
+    reactions = {item.split('-&gt;')[0].strip():item.split('-&gt;')[1].strip() for item in local_list[2:]}
+    return initial_polymer, reactions
+
+
+def single_step(polymer, reactions):
+    ''' Iterate one polymerization step by inserting monomers
+        Return new polymer
+    '''
+    new_polymer = ''
+    for i, c in enumerate(polymer[:-1]):
+        new_polymer += polymer[i]
+        interface = polymer[i:i+2]
+        if (interface in reactions.keys()):
+            new_polymer += reactions[interface]
+    new_polymer += polymer[-1]
+    return(new_polymer)
+
+
+def single_step_count(paircount, reactions):
+    ''' Iterate one polymerization step by counting and adapting the pairs
+        Return new dict of pair count
+    '''
+    for key, n in paircount.copy().items():
+        paircount[key] -= n
+        middle = reactions[key]
+        left, right = key
+        paircount[left + middle] = n if (left + middle not in paircount.keys()) else paircount[left + middle]+n
+        paircount[middle + right] = n if (middle + right not in paircount.keys()) else paircount[middle+right]+n
+    return paircount
+
+
+def count_pairs(initial_polymer, chars, polypairs):
+    ''' Count pairs as if in polymer
+        Return max count - min count
+    '''
+    char_count = dict()
+    for c in chars:
+        char_count[c] = 0
+        for k in polypairs.keys():
+            if (c == k[0]):
+                char_count[c] += polypairs[k]
+    char_count[initial_polymer[-1]] += 1
+    return max(char_count.values()) - min(char_count.values())
+
+
+def main():
+    polymer, reactions = read_daily_input('input14.txt')
+    new_polymer = polymer
+    for __ in range(10):
+        new_polymer = single_step(new_polymer, reactions)
+    chars = set([c for c in new_polymer])
+    char_count = dict()
+    for c in chars:
+        char_count[c] = new_polymer.count(c)
+    star1 = max(char_count.values()) - min(char_count.values())
+    print(f"Result (*): {star1}")
+
+    polypairs = dict()
+    for i in range(len(polymer)-1):
+        polypairs[polymer[i:i+2]] = 1 if (polymer[i:i+2] not in polypairs.keys()) else polypairs[polymer[i:i+2]] + 1
+    for __ in range(10):
+        polypairs = single_step_count(polypairs, reactions)
+    star1 = count_pairs(polymer, chars, polypairs)
+    print(f"Result (*) counting: {star1}")
+    for __ in range(30):
+        polypairs = single_step_count(polypairs, reactions)
+    star2 = count_pairs(polymer, chars, polypairs)
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day15" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_15_python"><a class="anchor" href="#_day_15_python"></a><a class="link" href="#_day_15_python">Day 15: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_15_chiton"><a class="anchor" href="#_aoc21_15_chiton"></a><a class="link" href="#_aoc21_15_chiton">AoC21-15: Chiton</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/15" class="bare">https://adventofcode.com/2021/day/15</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_15"><a class="anchor" href="#_info_15"></a><a class="link" href="#_info_15">Info</a></h5>
+<div class="paragraph">
+<p>Another 2D cave with risk level per position, due to chiton covered cave walls</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): What is the lowest risk level of all paths through cave</p>
+</li>
+<li>
+<p>Star2 (**): Expand cave to 5x5 map with incremental risk levels. Get new path with lowest risk.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_15"><a class="anchor" href="#_howto_15"></a><a class="link" href="#_howto_15">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and preprocessed into 2d list of risk levels. First approach was to aggregate first line into second line, as example had no complicated path. O naïve me&#8230;&#8203; (It actually worked, just the result was wrong&#8230;&#8203; 😁)</p>
+</div>
+<div class="paragraph">
+<p>So with several hints from Slack and Reddit I looked up Dijkstra and implemented it. My first version worked for star1, too, but was considerably slower than the online example. By swapping some lines and adjusting some others it got considerably faster, though</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Dijkstra version 1 (by "me")</p>
+</li>
+<li>
+<p>Star2: Expand risk layer, and use optimized Dijkstra (inspired by others 🤓)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_15"><a class="anchor" href="#_learned_today_15"></a><a class="link" href="#_learned_today_15">Learned today</a></h5>
+<div class="paragraph">
+<p>First Dijkstra implementation: Map risk layer to dict with (coord):risk and use accumulated path risk as priority for PriorityQueue. Store visited coords in dict (coord):accumulated_risk.</p>
+</div>
+<div class="paragraph">
+<p>I actually learned that it is much faster to put the adjacents directly to the visited list than the coordinates fresh from the queue. Probably avoids several re-visits of coords until all adjacents have been popped from the queue&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_15"><a class="anchor" href="#_source_15"></a><a class="link" href="#_source_15">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import math
+from pprint import pprint
+from queue import PriorityQueue
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+    return_list = [[int(c) for c in line] for line in local_list]
+    return return_list
+
+
+def transpose_list(any_list):
+    ''' Transpose list for analysis
+    '''
+    return [[row[i] for row in any_list] for i in range(len(any_list[0]))]
+
+
+def eval_nextline(risk_layer, firstline = False):
+    ''' Evaluate risk for all positions in second line
+        Return new risklayer
+        Does not work if optimal path has to go up a line...
+    '''
+    less_risk_layer = [row[:] for row in risk_layer]
+    if (len(less_risk_layer) == 1):
+        return less_risk_layer
+    if firstline:
+        for i in range(len(risk_layer[0])):
+            risk_factors = [sum(risk_layer[0][:j+1])+sum(risk_layer[1][j:i+1])-risk_layer[0][0] for j in range(i+1)]
+            # print(i, risk_factors)
+            less_risk_layer[1][i] = min(risk_factors)
+    else:
+        min_risks = [sum(risk_layer[0]) for __ in range(len(risk_layer[0]))]
+        for start in range(len(risk_layer[0])):
+            risk_factors = [0 for __ in range(len(risk_layer[0]))]
+            for i in range(len(risk_layer[0])):
+                if (i&lt;start):
+                    risk_factors[i] = risk_layer[0][start] + sum(risk_layer[1][i:start])
+                else:
+                    risk_factors[i] = min([sum(risk_layer[0][start:j+1])+sum(risk_layer[1][j:i+1]) for j in range(start, i+1)])
+                if (risk_factors[i] &lt; min_risks[i]):
+                    min_risks[i] = risk_factors[i]
+                # print(i, risk_factors)
+        less_risk_layer[1] = min_risks
+    return less_risk_layer[1:]
+
+
+def get_path(risk_layer):
+    ''' First Djikstra approach: Create graph (dict) of risk layer and push connections to PriorityQueue.
+        Return lower right value
+    '''
+    risk_graph = {(x, y): r for x, line in enumerate(risk_layer) for y, r in enumerate(line)}
+    max_x = len(risk_layer)
+    max_y = len(risk_layer[0])
+    q = PriorityQueue()
+    q.put((0, (0, 0)))
+    visited = {(0, 0): 0}
+    while not q.empty():
+        _r, (_x, _y) = q.get()
+        for adj in {(-1, 0), (1, 0), (0, -1), (0, 1)}:
+            _nx = _x + adj[0]
+            _ny = _y + adj[1]
+            if ((_nx &lt; 0) or (_nx &gt;= max_x) or (_ny &lt; 0) or (_ny &gt;= max_y)):
+                continue
+            _nr = _r + risk_graph[(_nx, _ny)]
+            if (_nx, _ny) == (max_x - 1, max_y - 1):
+                return _nr
+            if (((_nx, _ny) in visited.keys()) and (visited[(_nx, _ny)] &lt;= _nr)):
+                continue
+            visited[(_nx, _ny)] = _nr
+            q.put((_nr, (_nx, _ny)))
+        # print(visited)
+
+
+def expand_risklayer(risk_layer):
+    ''' Expand map 4x to the right and to the bottom for star2
+        Increase risk level on each expansion by 1
+        Returns expanded risklayer
+    '''
+    large_risklayer = list(risk_layer).copy()
+    for x_add in range(4):
+        chunk = [[((r+x_add)%9+1) for r in line] for line in risk_layer]
+        for j in range(len(large_risklayer.copy())):
+            large_risklayer[j] = large_risklayer[j] + chunk[j]
+
+    basic_risklayer = large_risklayer.copy()
+    for y_add in range(4):
+        for j, line in enumerate(basic_risklayer):
+            new_line = [((r+y_add)%9+1) for r in line]
+            large_risklayer.append(new_line)
+        # print("-------------------")
+        # for line in new_risklayer:
+        #     print('.'.join(str(i) for i in line))
+    return large_risklayer
+
+
+def main():
+    risk_layer = read_daily_input('input15.txt')
+    # risk_layer = read_daily_input('input_test.txt')
+
+    # for line in risk_layer:
+    #     print('.'.join(str(i) for i in line))
+    star1 = get_path(risk_layer)
+    print(f"Result (*): {star1}")
+    huge_risklayer = expand_risklayer(risk_layer)
+    star2 = get_path(huge_risklayer)
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day16" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_16_python"><a class="anchor" href="#_day_16_python"></a><a class="link" href="#_day_16_python">Day 16: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_16_packet_decoder"><a class="anchor" href="#_aoc21_16_packet_decoder"></a><a class="link" href="#_aoc21_16_packet_decoder">AoC21-16: Packet Decoder</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/16" class="bare">https://adventofcode.com/2021/day/16</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_16"><a class="anchor" href="#_info_16"></a><a class="link" href="#_info_16">Info</a></h5>
+<div class="paragraph">
+<p>Decode long hexadecimal packet with several sub-packets</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Sum up version info from all packets and sub-packets.</p>
+</li>
+<li>
+<p>Star2: Carry out encoded operations in packets and calculate final score of main packet.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_16"><a class="anchor" href="#_howto_16"></a><a class="link" href="#_howto_16">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and preprocessed. Today single line and preprocessing is main task of star1&#8230;&#8203;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Write parser to parse packet hierarchy and sum up version info.</p>
+</li>
+<li>
+<p>Star2: Improve parser to carry out operations as well and calculate final score of main packet. As parser from Star1 produced already recursively a list of all packets, the aggregation operations were just a small addition. Still did unelegantly copy the parser functions and separately implemented the code execution&#8230;&#8203; 🙄</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_16"><a class="anchor" href="#_learned_today_16"></a><a class="link" href="#_learned_today_16">Learned today</a></h5>
+<div class="paragraph">
+<p>Getting better with recursive stuff. There are probably lots of libs out there to do the parsing with two lines of regex, but my hands-on approach worked, too, in the end. Part 2 was thus quite easy to add in the end, after no more duplicate packets were in the final packet list 😁</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_16"><a class="anchor" href="#_source_16"></a><a class="link" href="#_source_16">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import math
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+    # local_list[0] = 'D2FE28'
+    # local_list[0] = '8A004A801A8002F478'
+    bin_list = [n for c in local_list[0] for n in format(int(c, 16), '04b')]
+    return bin_list
+
+
+def parse_input(main_stream, packets = []):
+    ''' Parse packet as list of bit-strings
+        Return list of packets
+    '''
+
+    def read_chunk(stream, n):
+        ''' Reads number n of bits of stream
+            Returns value of bits and returns rest of stream
+        '''
+        return int(''.join(stream[:n]), 2), stream[n:]
+
+    def read_literal(stream):
+        ''' Reads and splits sub-packets of 5 bit
+            Returns list of data numbers and rest of stream
+        '''
+        last = False
+        data = []
+        while not last:
+            data_packet = stream[:5]
+            if (data_packet[0] == '0'):
+                last = True
+            data.extend(data_packet[1:])
+            stream = stream[5:]
+        return int(''.join(data), 2), stream
+
+    def read_single_packet(stream):
+        ''' Reads single packet
+            Return list of dict(s) and rest of stream
+        '''
+        new_packet = {'ver': None, 'type': None, 'op_l': None, 'data': None}
+        # print(stream)
+        ver, stream = read_chunk(stream, 3)
+        new_packet['ver'] = ver
+        type, stream = read_chunk(stream, 3)
+        new_packet['type'] = type
+        # print(ver, type)
+        if (type == 4):
+            data, stream = read_literal(stream)
+            new_packet['data'] = data
+            # print("new literal packet\n", new_packet)
+            return [new_packet], stream
+        else:
+            op_l, stream = read_chunk(stream, 1)
+            new_packet['op_l'] = op_l
+            # print(op_l)
+            if (op_l == 0):
+                bit_length, stream = read_chunk(stream, 15)
+                sub_stream = stream[:bit_length]
+                new_0packets = []
+                while ((len(sub_stream) &gt; 10) and (sum([int(c) for c in sub_stream]) &gt; 0)):
+                    bit_packets, sub_stream = read_single_packet(sub_stream)
+                    new_0packets.extend(bit_packets)
+                return ([new_packet] + new_0packets), stream[bit_length:]
+            else:
+                packet_count, stream = read_chunk(stream, 11)
+                new_1packets = []
+                # print("sub_packetcount:", packet_count)
+                while len(new_1packets) &lt; packet_count:
+                    counted_packets, stream = read_single_packet(stream)
+                    new_1packets.extend(counted_packets)
+                    # print("new sub packets\n", new_packets)
+                # print("new 1 packet\n", new_packets)
+                return ([new_packet] + new_1packets), stream
+
+    # print("main stream: \n", main_stream)
+    while ((len(main_stream) &gt; 10) and (sum([int(c) for c in main_stream]) &gt; 0)):
+        new_packets, main_stream = read_single_packet(main_stream)
+        packets.extend(new_packets)
+        # print("packets \n", packets)
+    return packets
+
+
+def interpret_input(main_stream, packets = []):
+    ''' Parse packet as list of bit-strings and interpret op packets
+        Return score
+    '''
+
+    def read_chunk(stream, n):
+        ''' Reads number n of bits of stream
+            Returns value of bits and returns rest of stream
+        '''
+        return int(''.join(stream[:n]), 2), stream[n:]
+
+    def read_literal(stream):
+        ''' Reads and splits sub-packets of 5 bit
+            Returns list of data numbers and rest of stream
+        '''
+        last = False
+        data = []
+        while not last:
+            data_packet = stream[:5]
+            if (data_packet[0] == '0'):
+                last = True
+            data.extend(data_packet[1:])
+            stream = stream[5:]
+        return int(''.join(data), 2), stream
+
+    def do_the_op(op, packets):
+        ''' Carry out the operation from op code with data packets
+            Return result value
+        '''
+        if op == 0: # sum
+            return sum([p['data'] for p in packets])
+        if op == 1: # product
+            prod = 1
+            for p in packets:
+                prod = prod * p['data'] if p['data'] != None else prod
+            return prod
+        if op == 2: # min
+            return min([p['data'] for p in packets])
+        if op == 3: # max
+            return max([p['data'] for p in packets])
+        if op == 5: # p1 &gt; p2 ? 1 : 0
+            return 1 if packets[0]['data'] &gt; packets[1]['data'] else 0
+        if op == 6: # p1 &lt; p2 ? 1 : 0
+            return 1 if packets[0]['data'] &lt; packets[1]['data'] else 0
+        if op == 7: # p1 = p2 ? 1 : 0
+            return 1 if packets[0]['data'] == packets[1]['data'] else 0
+
+    def read_single_packet(stream):
+        ''' Reads single packet
+            Return list of dict(s) and rest of stream
+        '''
+        new_packet = {'ver': None, 'type': None, 'op_l': None, 'data': None}
+        # print(stream)
+        ver, stream = read_chunk(stream, 3)
+        new_packet['ver'] = ver
+        type, stream = read_chunk(stream, 3)
+        new_packet['type'] = type
+        # print(ver, type)
+        if (type == 4):
+            data, stream = read_literal(stream)
+            new_packet['data'] = data
+            # print("new literal packet\n", new_packet)
+            return [new_packet], stream
+        else:
+            op_l, stream = read_chunk(stream, 1)
+            new_packet['op_l'] = op_l
+            # print(op_l)
+            if (op_l == 0):
+                bit_length, stream = read_chunk(stream, 15)
+                sub_stream = stream[:bit_length]
+                new_0packets = []
+                while ((len(sub_stream) &gt; 10) and (sum([int(c) for c in sub_stream]) &gt; 0)):
+                    bit_packet, sub_stream = read_single_packet(sub_stream)
+                    new_0packets.extend(bit_packet)
+                result = do_the_op(type, new_0packets)
+                new_packet['data'] = result
+                return [new_packet], stream[bit_length:]
+            else:
+                packet_count, stream = read_chunk(stream, 11)
+                new_1packets = []
+                # print("sub_packetcount:", packet_count)
+                while len(new_1packets) &lt; packet_count:
+                    counted_packet, stream = read_single_packet(stream)
+                    new_1packets.extend(counted_packet)
+                    # print("new sub packets\n", new_packets)
+                # print("new 1 packet\n", new_packets)
+                result = do_the_op(type, new_1packets)
+                new_packet['data'] = result
+                return [new_packet], stream
+
+    # print("main stream: \n", main_stream)
+    while ((len(main_stream) &gt; 10) and (sum([int(c) for c in main_stream]) &gt; 0)):
+        new_packet, main_stream = read_single_packet(main_stream)
+        packets.extend(new_packet)
+        # print("packets \n", packets)
+    return packets
+
+
+def main():
+    main_packet = read_daily_input('input16.txt')
+    # print(''.join(main_packet))
+    packets = parse_input(main_packet.copy())
+    # pprint(packets)
+    star1 = sum([p['ver'] for p in packets])
+    print(f"Result (*): {star1}")
+    star2 = interpret_input(main_packet)[0]['data']
+    print(f"Result (**): {star2}")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+</div>
+</div>
+<a id="day17" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_17_python"><a class="anchor" href="#_day_17_python"></a><a class="link" href="#_day_17_python">Day 17: python</a></h3>
+<style>
+    ul p, ol p, ul>li p, ol>li p {
+        line-height: 1.2;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="sect3">
+<h4 id="_aoc21_17_trick_shot"><a class="anchor" href="#_aoc21_17_trick_shot"></a><a class="link" href="#_aoc21_17_trick_shot">AoC21-17: Trick Shot</a></h4>
+<div class="paragraph">
+<p><a href="https://adventofcode.com/2021/day/17" class="bare">https://adventofcode.com/2021/day/17</a></p>
+</div>
+<div class="sect4">
+<h5 id="_info_17"><a class="anchor" href="#_info_17"></a><a class="link" href="#_info_17">Info</a></h5>
+<div class="paragraph">
+<p>Shoot probe into target area under the influence of drag and gravity.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1 (*): What is the highest culmination point possible?</p>
+</li>
+<li>
+<p>Star2 (**): How many start velocities are hitting the mark?</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_howto_17"><a class="anchor" href="#_howto_17"></a><a class="link" href="#_howto_17">HowTo</a></h5>
+<div class="paragraph">
+<p>Data is read from the file 'input&lt;two-digit-day&gt;.txt' line by line and preprocessed into target_x and target_y ranges.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Star1: Determine min velocity_x to reach target. Iterate through large enough range to hit all possibilities. Return max height.</p>
+</li>
+<li>
+<p>Star2: Use length of results list. Increase range of velocity_y to negative start values 😅</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_learned_today_17"><a class="anchor" href="#_learned_today_17"></a><a class="link" href="#_learned_today_17">Learned today</a></h5>
+<div class="paragraph">
+<p>There&#8217;s always a range+1 initial value that might still hit the target 🙃</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_source_17"><a class="anchor" href="#_source_17"></a><a class="link" href="#_source_17">Source</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-python" data-lang="python"># see README.adoc
+
+import math
+from pprint import pprint
+
+def read_daily_input(filename):
+    ''' Read lines from file with given input name
+        cast to daily required type and return list
+    '''
+    with open(filename) as input_file:
+        local_list = [item.strip() for item in input_file.readlines()]
+    target_area_range = [int(num.strip(', ')) for item in local_list[0].split()[2:4] for num in item.split("=")[1].split('..')]
+    x = target_area_range[:2]
+    y = target_area_range[2:]
+    return x, y
+
+
+def check_target(pos, target_x, target_y):
+    ''' Check if pos is in target_range
+        Return bool
+    '''
+    x, y = pos
+    return ((target_x[0] &lt;= x &lt;= target_x[1]) and (target_y[0] &lt;= y &lt;= target_y[1]))
+
+
+def shoot_probe(velocity, target_x, target_y):
+    ''' Shoot probe with initial velocity.
+        Return whether target region reached as max height or not as 0
+        Rules:
+            The probe's x position increases by its x velocity.
+            The probe's y position increases by its y velocity.
+            Due to drag, the probe's x velocity changes by 1 toward the value 0; that is, it decreases by 1 if it is greater than 0, increases by 1 if it is less than 0, or does not change if it is already 0.
+            Due to gravity, the probe's y velocity decreases by 1.
+    '''
+    x, y = (0, 0)
+    v_x, v_y = velocity
+    max_height = 0
+    while x &lt;= max(target_x) and y &gt;= min(target_y):
+        x += v_x
+        y += v_y
+        if (y &gt; max_height):
+            max_height = y
+        if check_target((x, y), target_x, target_y):
+            return True, max_height
+        v_x = max(0, v_x - 1)
+        v_y -= 1
+    return False, 0
+
+def main():
+    target_x, target_y = read_daily_input('input17.txt')
+    # target_x, target_y = read_daily_input('input_test.txt')
+    print('Target area: ', target_x, target_y)
+    n = 0
+    sum_num = 0
+    while sum_num &lt; target_x[0]:
+        n += 1
+        sum_num = (n * (n + 1)) / 2
+    results = []
+    for v_x in range(n, max(target_x)+1):
+        for v_y in range((-20*n), 20*n):
+            mark, result = shoot_probe((v_x, v_y), target_x, target_y)
+            if (mark):
+                results.append(result)
+    star1 = max(results)
+    print(f"Result (*): {star1}")
+    star2 = len(results)
     print(f"Result (**): {star2}")
 
 
