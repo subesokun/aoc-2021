@@ -6,7 +6,7 @@ const fs = require('fs')
  * @param {Array.<Array.<number>>} riskMatrix
  * @returns {number}
  */
-function findMinPath(riskMatrix) {
+function getPathWithMinRisk(riskMatrix) {
     /** @type {Array.<Array.<{x: number, y: number, risk: number}>>} */
     const gridMatrix = new Array(riskMatrix.length)
         .fill(null)
@@ -48,7 +48,7 @@ function findMinPath(riskMatrix) {
  * @param {Array.<Array.<number>>} riskMatrix
  */
 function runSolutionPuzzleOne(riskMatrix) {
-    const result = findMinPath(riskMatrix)
+    const result = getPathWithMinRisk(riskMatrix)
     console.log(`Solution to first puzzle: ${result}`)
 }
 // end::star1[]
@@ -73,7 +73,7 @@ function runSolutionPuzzleTwo(riskMatrix) {
             }
         }
     }
-    const result = findMinPath(fullRiskMatrix)
+    const result = getPathWithMinRisk(fullRiskMatrix)
     console.log(`Solution to second puzzle: ${result}`)
 }
 // end::star2[]
