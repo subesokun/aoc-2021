@@ -17,7 +17,7 @@ function getCharCountForTemplate(template, steps, rules) {
     for (let step = 1; step <= steps; step++) {
         const pairMapClone = new Map([...pairMap])
         for (const [pair, count] of pairMapClone.entries()) {
-            // Add new pairs depending of the quantity of the current pair
+            // Add new pairs depending on the quantity of the current pair
             const insertChar = rules.get(pair)
             const leftPair = pair[0] + insertChar
             const rightPair = insertChar + pair[1]
