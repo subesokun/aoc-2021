@@ -2,38 +2,54 @@ const fs = require('fs')
 
 // tag::star1[]
 /**
- * @param {string} pair 
- * @param {number} depth 
- * @param {Map<string, Map<string, number>>} lookupMap 
+ * We just need to count the number of pairs and the numbers of single chars added.
+ * The correct order of the pairs in the template string is irrelevant hence
+ * we don't need to perform here any complex string modifications. This makes
+ * the solution pretty simple :o)
+ * @param {string} template 
+ * @param {number} steps 
  * @param {Map<string, string>} rules 
  * @returns {Map<string, number>}
  */
-function resolvePair(pair, depth, lookupMap, rules) {
-    const pairHash = pair + depth
-    const lookupPair = lookupMap.get(pairHash)
-    if (lookupPair !== undefined) {
-        return new Map(Array.from(lookupPair))
+function getCharCountForTemplate(template, steps, rules) {
+    const pairMap = initializePairMap(template)
+    const charCountMap = countChars(template)
+    for (let step = 1; step <= steps; step++) {
+        const pairMapClone = new Map([...pairMap])
+        for (const [pair, count] of pairMapClone.entries()) {
+            // Add new pairs depending of the quantity of the current pair
+            const insertChar = rules.get(pair)
+            const leftPair = pair[0] + insertChar
+            const rightPair = insertChar + pair[1]
+            incrementMapValue(pairMap, leftPair, count)
+            incrementMapValue(pairMap, rightPair, count)
+
+            // Update char count
+            incrementMapValue(charCountMap, insertChar, count)
+
+            // Finally, remove current pairs as we've split them up into two new pairs
+            decrementMapValue(pairMap, pair, count)
+            if (pairMap.get(pair) === 0) {
+                pairMap.delete(pair)
+            }
+        }
     }
-    const insertChar = rules.get(pair)
-    const leftPair = resolvePair(pair[0] + insertChar, depth - 1, lookupMap, rules)
-    const rightPair = resolvePair(insertChar + pair[1], depth - 1, lookupMap, rules)
-        // Remove overlapping character between "left" and right" pair from count
-    rightPair.set(insertChar, rightPair.get(insertChar) - 1)
-    const resultCountMap = mergeCountMap(leftPair, rightPair)
-    lookupMap.set(pairHash, resultCountMap)
-    return new Map(Array.from(resultCountMap))
+    return charCountMap
 }
 
 /**
- * @param {Map<string, number>} leftMap 
- * @param {Map<string, number>} rightMap 
+ * Map of pairs appearing in the template string and their count
+ * @param {string} template
+ * @returns {Map<string, Map<string, number>>}
  */
-function mergeCountMap(leftMap, rightMap) {
-    const result = new Map([...rightMap])
-    for (const [char, charCount] of leftMap.entries()) {
-        result.set(char, charCount + (result.get(char) || 0))
+function initializePairMap(template) {
+    /** @type {Map<string, number>} */
+    const pairMap = new Map()
+    for (let i = 0; i < template.length - 1; i++) {
+        const pair = template[i] + template[i + 1]
+        pairMap.set(pair, pairMap.has(pair) ? pairMap.get(pair) + 1 : 1)
     }
-    return result
+    return pairMap
 }
 
 /**
@@ -43,42 +59,17 @@ function mergeCountMap(leftMap, rightMap) {
 function countChars(template) {
     const resultMap = new Map()
     for (const char of template) {
-        resultMap.set(char, (resultMap.get(char) || 0) + 1)
+        incrementMapValue(resultMap, char, 1)
     }
     return resultMap
 }
 
-/**
- * @param {Map<string, string>} rules
- * @returns {Map<string, Map<string, number>>}
- */
-function seedLookupMap(rules) {
-    /** @type {Map<string, Map<string, number>>} */
-    const lookupMap = new Map()
-    for (const [rule, char] of rules.entries()) {
-        lookupMap.set(rule + 1, countChars(rule[0] + char + rule[1]))
-    }
-    return lookupMap
+function incrementMapValue(map, key, value) {
+    map.set(key, map.has(key) ? map.get(key) + value : value)
 }
 
-/**
- * @param {string} template 
- * @param {number} depth 
- * @param {Map<string, string>} rules 
- * @returns {Map<string, number>}
- */
-function getCharCountForTemplate(template, depth, rules) {
-    const lookupMap = seedLookupMap(rules)
-        /** @type {Map<string, number>} */
-    let result = new Map()
-    for (let i = 0; i < template.length - 1; i++) {
-        if (i > 0) {
-            // Remove count for overlapping character
-            result.set(template[i], result.get(template[i]) - 1)
-        }
-        result = mergeCountMap(result, resolvePair(template[i] + template[i + 1], depth, lookupMap, rules))
-    }
-    return result
+function decrementMapValue(map, key, value) {
+    map.set(key, map.get(key) - value)
 }
 
 /**
