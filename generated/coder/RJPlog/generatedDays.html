@@ -303,6 +303,36 @@
 </li>
 </ul>
 </li>
+<li><a href="#_day_18_kotlin">Day 18: kotlin</a>
+<ul class="sectlevel3">
+<li><a href="#_day_18_snailfish">Day 18: Snailfish</a>
+<ul class="sectlevel4">
+<li><a href="#_first_star_16">First Star</a></li>
+<li><a href="#_second_star_16">Second Star</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_19_kotlin">Day 19: kotlin</a>
+<ul class="sectlevel3">
+<li><a href="#_day_19_beacon_scanner">Day 19: Beacon Scanner</a>
+<ul class="sectlevel4">
+<li><a href="#_first_star_17">First Star</a></li>
+<li><a href="#_second_star_17">Second Star</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_20_kotlin">Day 20: kotlin</a>
+<ul class="sectlevel3">
+<li><a href="#_day_20_trench_map">Day 20: Trench Map</a>
+<ul class="sectlevel4">
+<li><a href="#_first_star_18">First Star</a></li>
+<li><a href="#_second_star_18">Second Star</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -2418,6 +2448,715 @@ Similar to narrowing the range of x velocities, y velocities can be narrowed fro
 	println("*************************")
 	println("Solution for part2")
 	println("   $numberOfInit many distinct initial velocity values cause the probe to be within the target area after any step")
+	println()</code></pre>
+</div>
+</div>
+<a id="day18" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_18_kotlin"><a class="anchor" href="#_day_18_kotlin"></a><a class="link" href="#_day_18_kotlin">Day 18: kotlin</a></h3>
+<div class="sect3">
+<h4 id="_day_18_snailfish"><a class="anchor" href="#_day_18_snailfish"></a><a class="link" href="#_day_18_snailfish">Day 18: Snailfish</a></h4>
+<div class="paragraph">
+<p>This solution is written in Kotlin.</p>
+</div>
+<div class="paragraph">
+<p>The original puzzle can be found at <a href="https://adventofcode.com/2021/day/18" class="bare">https://adventofcode.com/2021/day/18</a></p>
+</div>
+<div class="paragraph">
+<p>For execution enter <em>kotlin day2118_1.kts</em> in the command line or _kotlin day218_2.kts</p>
+</div>
+<div class="sect4">
+<h5 id="_first_star_16"><a class="anchor" href="#_first_star_16"></a><a class="link" href="#_first_star_16">First Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>General idea is to create to lists for each snailfish number, one contains all values, the second one contains the level. The level is created by counting the input string&#8217;s brackets, an opening bracket will increase the level, an closing bracket will decrease. As soon as a digit is regcognised in the string, the value and the level are stored in the corresponding lists. When adding a second snailfish number, it is added to the lists and afterwards the level of all entries is increased.</p>
+</div>
+<div class="paragraph">
+<p>After that within a while loop the reduction is started following the rules, manipulating entries of both lists. After all values are added, the magnitude is calculated</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	var snailFishNumber = mutableListOf&lt;Int&gt;()
+	var snailFishNumLev = mutableListOf&lt;Int&gt;()
+	var levelCount: Int = 0
+	var startAddition: Boolean = false
+
+	File("day2118_puzzle_input.txt").forEachLine {
+		it.forEach {
+			if (it == '[') {
+				levelCount += 1
+			} else if (it == ']') {
+				levelCount -= 1
+			} else if (it.isDigit()) {
+				snailFishNumber.add(it.toString().toInt())
+				snailFishNumLev.add(levelCount)
+			}
+		}
+
+		if (startAddition) {
+			// values are now added, therefore Level has to  be increased by one
+			for (i in 0..snailFishNumLev.size - 1) {
+				snailFishNumLev[i] += 1
+			}
+
+			//  reduce snail fish number
+			var nestInProg: Boolean = true
+			var j: Int = 0
+			while (nestInProg) {// while ....
+				j += 1
+				var nested = snailFishNumLev.indexOf(5)
+				var greater: Int = -1
+				for (i in 0..snailFishNumber.size - 1) {
+					if (snailFishNumber[i] &gt; 9) {
+						greater = i
+						break
+					}
+				}
+
+				if (nested &gt; -1) {
+					if (nested == 0) {
+						snailFishNumber[nested + 2] = snailFishNumber[nested + 2] + snailFishNumber[nested + 1]
+						snailFishNumber[nested + 1] = 0
+						snailFishNumLev[nested + 1] -= 1
+						snailFishNumber.removeAt(0)
+						snailFishNumLev.removeAt(0)
+					} else if (nested == snailFishNumber.size - 2) {
+						snailFishNumber[nested - 1] = snailFishNumber[nested - 1] + snailFishNumber[nested]
+						snailFishNumber[nested] = 0
+						snailFishNumLev[nested] -= 1
+						snailFishNumber.removeAt(nested + 1)
+						snailFishNumLev.removeAt(nested + 1)
+					} else {
+						snailFishNumber[nested - 1] = snailFishNumber[nested - 1] + snailFishNumber[nested]
+						snailFishNumber[nested + 2] = snailFishNumber[nested + 2] + snailFishNumber[nested + 1]
+						snailFishNumber[nested + 1] = 0
+						snailFishNumLev[nested + 1] -= 1
+						snailFishNumber.removeAt(nested)
+						snailFishNumLev.removeAt(nested)
+					}
+
+				} else if (greater &gt; -1) {
+					var value = snailFishNumber[greater]
+					snailFishNumber[greater] = value / 2
+					snailFishNumber.add(greater + 1, value / 2 + value % 2)
+					snailFishNumLev[greater] = snailFishNumLev[greater] + 1
+					snailFishNumLev.add(greater, snailFishNumLev[greater])
+				} else if (nested == -1 &amp;&amp; greater == -1) {
+					nestInProg = false
+				}
+
+			}// end while
+		}
+		startAddition = true
+	}
+
+	println(snailFishNumLev)
+	println(snailFishNumber)
+	println()
+
+	// calculate magnitude
+	while(snailFishNumLev.contains(4)) {
+		var lowLev = snailFishNumLev.indexOf(4)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumLev.contains(3)) {
+		var lowLev = snailFishNumLev.indexOf(3)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumLev.contains(2)) {
+		var lowLev = snailFishNumLev.indexOf(2)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumber.size &gt; 1) {
+		snailFishNumber[0] = snailFishNumber[0]*3 + snailFishNumber[1]*2
+
+		snailFishNumber.removeAt(1)
+	}
+
+	println("magnitude: $snailFishNumber")
+	println()
+
+
+solution1 = snailFishNumber[0]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_second_star_16"><a class="anchor" href="#_second_star_16"></a><a class="link" href="#_second_star_16">Second Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>Here only some modifications are necessary to run through all possible combinations of values to add, meanwhile the largest value is keept.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	var snailFishNumber = mutableListOf&lt;Int&gt;()
+	var snailFishNumLev = mutableListOf&lt;Int&gt;()
+	var levelCount: Int = 0
+	var startAddition: Boolean = false
+
+	File("day2118_puzzle_input.txt").forEachLine {
+		it.forEach {
+			if (it == '[') {
+				levelCount += 1
+			} else if (it == ']') {
+				levelCount -= 1
+			} else if (it.isDigit()) {
+				snailFishNumber.add(it.toString().toInt())
+				snailFishNumLev.add(levelCount)
+			}
+		}
+
+		if (startAddition) {
+			// values are now added, therefore Level has to  be increased by one
+			for (i in 0..snailFishNumLev.size - 1) {
+				snailFishNumLev[i] += 1
+			}
+
+			//  reduce snail fish number
+			var nestInProg: Boolean = true
+			var j: Int = 0
+			while (nestInProg) {// while ....
+				j += 1
+				var nested = snailFishNumLev.indexOf(5)
+				var greater: Int = -1
+				for (i in 0..snailFishNumber.size - 1) {
+					if (snailFishNumber[i] &gt; 9) {
+						greater = i
+						break
+					}
+				}
+
+				if (nested &gt; -1) {
+					if (nested == 0) {
+						snailFishNumber[nested + 2] = snailFishNumber[nested + 2] + snailFishNumber[nested + 1]
+						snailFishNumber[nested + 1] = 0
+						snailFishNumLev[nested + 1] -= 1
+						snailFishNumber.removeAt(0)
+						snailFishNumLev.removeAt(0)
+					} else if (nested == snailFishNumber.size - 2) {
+						snailFishNumber[nested - 1] = snailFishNumber[nested - 1] + snailFishNumber[nested]
+						snailFishNumber[nested] = 0
+						snailFishNumLev[nested] -= 1
+						snailFishNumber.removeAt(nested + 1)
+						snailFishNumLev.removeAt(nested + 1)
+					} else {
+						snailFishNumber[nested - 1] = snailFishNumber[nested - 1] + snailFishNumber[nested]
+						snailFishNumber[nested + 2] = snailFishNumber[nested + 2] + snailFishNumber[nested + 1]
+						snailFishNumber[nested + 1] = 0
+						snailFishNumLev[nested + 1] -= 1
+						snailFishNumber.removeAt(nested)
+						snailFishNumLev.removeAt(nested)
+					}
+
+				} else if (greater &gt; -1) {
+					var value = snailFishNumber[greater]
+					snailFishNumber[greater] = value / 2
+					snailFishNumber.add(greater + 1, value / 2 + value % 2)
+					snailFishNumLev[greater] = snailFishNumLev[greater] + 1
+					snailFishNumLev.add(greater, snailFishNumLev[greater])
+				} else if (nested == -1 &amp;&amp; greater == -1) {
+					nestInProg = false
+				}
+
+			}// end while
+		}
+		startAddition = true
+	}
+
+	println(snailFishNumLev)
+	println(snailFishNumber)
+	println()
+
+	// calculate magnitude
+	while(snailFishNumLev.contains(4)) {
+		var lowLev = snailFishNumLev.indexOf(4)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumLev.contains(3)) {
+		var lowLev = snailFishNumLev.indexOf(3)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumLev.contains(2)) {
+		var lowLev = snailFishNumLev.indexOf(2)
+		snailFishNumber[lowLev] = snailFishNumber[lowLev]*3 + snailFishNumber[lowLev+1]*2
+		snailFishNumLev[lowLev]	= snailFishNumLev[lowLev]- 1
+		snailFishNumber.removeAt(lowLev + 1)
+		snailFishNumLev.removeAt(lowLev + 1)
+	}
+	while(snailFishNumber.size &gt; 1) {
+		snailFishNumber[0] = snailFishNumber[0]*3 + snailFishNumber[1]*2
+
+		snailFishNumber.removeAt(1)
+	}
+
+	println("magnitude: $snailFishNumber")
+	println()
+
+
+solution1 = snailFishNumber[0]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At the end, both solutions are printed out.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">// print solution for part 1
+	println("**************************")
+	println("--- Day 18: Snailfish  ---")
+	println("**************************")
+	println("Solution for part1")
+	println("   $solution1 ")
+	println()
+// print solution for part 2
+	println("**************************")
+	println("Solution for part2")
+	println("   $solution2 ")
+	println()</code></pre>
+</div>
+</div>
+<a id="day19" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_19_kotlin"><a class="anchor" href="#_day_19_kotlin"></a><a class="link" href="#_day_19_kotlin">Day 19: kotlin</a></h3>
+<div class="sect3">
+<h4 id="_day_19_beacon_scanner"><a class="anchor" href="#_day_19_beacon_scanner"></a><a class="link" href="#_day_19_beacon_scanner">Day 19: Beacon Scanner</a></h4>
+<div class="paragraph">
+<p>This solution is written in Kotlin.</p>
+</div>
+<div class="paragraph">
+<p>The original puzzle can be found at <a href="https://adventofcode.com/2021/day/19" class="bare">https://adventofcode.com/2021/day/19</a></p>
+</div>
+<div class="paragraph">
+<p>For execution enter <em>kotlin day2119_1_2.kts</em> in the command line.</p>
+</div>
+<div class="paragraph">
+<p>For the solution of this puzzle at first I created a class which holds for each scan the scanner id, the position of the scanner (which are at the beginning only placeholders) and the raw data. There are three functions for this class, one to flip and rotate the raw data in the 24 different views, one to adapt an offset to the data, and a function to set the position after it is caluclated. The class is implemented with a lot of copy-paste-modify for the flip/rot operations, which are not very elegant, but at the end it worked and I have already put to much time into it. If you are really interested, you can find the code in the repository.</p>
+</div>
+<div class="paragraph">
+<p>The puzzle input is read and the scans are put into an object of the above described class and put into a list <em>allScans</em>. The first one is already move out into a second list _matchedScans with position of the scanner set to (0,0,0).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// setup for reading puzzle input
+	var scanInput = mutableListOf&lt;Triple&lt;Int, Int, Int&gt;&gt;()
+	var allScans = mutableListOf&lt;scanX&gt;()
+	var scanID: String = ""
+
+	// read all scans of puzzle input into scanX classes and add them to a list of unmathced scans (allScans)
+	File("day2119_puzzle_input.txt").forEachLine {
+		if (it.contains("--")) {
+			scanInput.clear()
+			scanID = it.drop(4).dropLast(4).replace(" ", "-")
+		} else if (it.length &gt; 1) {
+			var position = it.split(",")
+			scanInput.add(
+				Triple(
+					position[0].toString().toInt(),
+					position[1].toString().toInt(),
+					position[2].toString().toInt()
+				)
+			)
+		} else {
+			//println(scanInput.sortedWith(compareBy({ it.first }, { it.second }, { it.third }))):  not necessary, does not bring any benefit
+			allScans.add(scanX(scanInput.toList(), scanID))
+		}
+	}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now for all remaining objects out of <em>allScans</em> an element is picked and a second loop is nested to flip and rotate it in all directions. With each result, all beacons of last <em>matchedSans</em> objects are compared with <em>allScans</em>. Therefore over all beacons the offset necessary to match a single beacons is caluclated and the complete dataset of the object is shifted. If then there are 12 or more matches, the object is moved into <em>matchedScans</em> and removed out of <em>allScans</em>. At this time already also the absolut position of the new matched object is determined and stored.</p>
+</div>
+<div class="paragraph">
+<p>At the end the list <em>matchedScans</em> contains all scans flipped and rotated in the right position with their absolute position stored.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// initialize list with matched scans (matchedScans) with first element of allScans list
+	var matchedScans = mutableListOf&lt;scanX&gt;()
+	matchedScans.add(allScans[0])
+	matchedScans[0].flipRotate(0)
+	matchedScans[0].scanPosX = 0
+	matchedScans[0].scanPosY = 0
+	matchedScans[0].scanPosY = 0
+
+	allScans.removeAt(0)
+
+	// allScans contains the unmatched scans, if a match is detected the object will be moved to matchedScans
+	// so if allScans is empty, no scan to match is left, job done
+	var matchList = mutableListOf&lt;Int&gt;()
+	var mm: Int = 0
+
+	while (allScans.isNotEmpty()) {
+
+		for (m in 0..allScans.size - 1) {
+
+			Loop@ for (ii in 0..23) {
+
+				allScans[m].flipRotate(ii)
+
+				for (j in 0..matchedScans[mm].beaconsFlipRot.size - 1) {
+
+					var beacon1 = matchedScans[mm].beaconsFlipRot[j]
+
+					for (i in 0..allScans[m].beaconsFlipRot.size - 1) {
+
+						var beacon2 = allScans[m].beaconsFlipRot[i]
+						var beacon2Raw = allScans[m].beacons[i]
+
+						var x_off = beacon1.first - beacon2.first
+						var y_off = beacon1.second - beacon2.second
+						var z_off = beacon1.third - beacon2.third
+
+						allScans[m].shiftByOffset(x_off, y_off, z_off)
+
+						if (matchedScans[mm].beaconsFlipRot.intersect(allScans[m].beaconsFlipRot).size &gt; 11) {
+
+							// this is the right place to set positions of scans:
+							// beacon1 is used as first input. beacon2 is already shifted and transformed, so we need var beacon2Raw = allScans[m].beacons[i]
+							allScans[m].setPosition(beacon1, beacon2Raw, ii)
+
+							// shift allScan into matchedScan
+							matchedScans.add(allScans[m])
+							matchList.add(m)
+							break@Loop
+						}
+					}
+				}
+			}
+		}
+
+		// this is used to know which objects out of allScans where transfered into matchedScans and therefor can be deleted
+		matchList.sortDescending()
+		matchList.forEach {
+			allScans.removeAt(it)
+		}
+		matchList.clear()
+
+		mm += 1
+	}</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_first_star_17"><a class="anchor" href="#_first_star_17"></a><a class="link" href="#_first_star_17">First Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>For the first star, all beacons out ouf all scans of <em>matchesScans</em> are stored in a new list without dublicates. The size of the list is result of part 1</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// for part1 print all beacons in a list without dublicates and count
+	var beaconsList = mutableListOf&lt;Triple&lt;Int, Int, Int&gt;&gt;()
+
+	matchedScans.forEach {
+		it.beaconsFlipRot.forEach {
+			if (!beaconsList.contains(it)) {
+				beaconsList.add(it)
+			}
+		}
+	}
+
+	solution1 = beaconsList.size
+	// end::part1[]
+
+	// for part2 iterate through absolute coordinates of all Scans and calculate manhatten distance
+	var manhattenDistMax: Int  = 0
+	var manhattenDist: Int = 0
+
+	for (i in 0..matchedScans.size-1) {
+		for( j in 0..matchedScans.size-1) {
+			if (i!=j) {
+				manhattenDist = abs(matchedScans[i].scanPosX - matchedScans[j].scanPosX)
+				manhattenDist = manhattenDist + abs(matchedScans[i].scanPosY - matchedScans[j].scanPosY)
+				manhattenDist = manhattenDist + abs(matchedScans[i].scanPosZ - matchedScans[j].scanPosZ)
+
+				if (manhattenDist &gt; manhattenDistMax) {
+					manhattenDistMax = manhattenDist
+				}
+			}
+		}
+	}
+
+	solution2 = manhattenDistMax
+
+	// print solution for part 1
+	println("******************************")
+	println("--- Day 19: Beacon Scanner ---")
+	println("******************************")
+	println("Solution for part1")
+	println("   $solution1 beacons are there")
+	println()
+	// print solution for part 2
+	println("******************************")
+	println("Solution for part2")
+	println("   $solution2 is the largest Manhattan distance between any two scanners")
+	println()
+	t1 = System.currentTimeMillis() - t1
+	println("puzzle solved in ${t1} ms")
+//}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_second_star_17"><a class="anchor" href="#_second_star_17"></a><a class="link" href="#_second_star_17">Second Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>For the second star all positions out of all objects in <em>matchedScans</em> are compared to each other by calculating the manhatten distance. The max value is solution for part 2</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// for part2 iterate through absolute coordinates of all Scans and calculate manhatten distance
+	var manhattenDistMax: Int  = 0
+	var manhattenDist: Int = 0
+
+	for (i in 0..matchedScans.size-1) {
+		for( j in 0..matchedScans.size-1) {
+			if (i!=j) {
+				manhattenDist = abs(matchedScans[i].scanPosX - matchedScans[j].scanPosX)
+				manhattenDist = manhattenDist + abs(matchedScans[i].scanPosY - matchedScans[j].scanPosY)
+				manhattenDist = manhattenDist + abs(matchedScans[i].scanPosZ - matchedScans[j].scanPosZ)
+
+				if (manhattenDist &gt; manhattenDistMax) {
+					manhattenDistMax = manhattenDist
+				}
+			}
+		}
+	}
+
+	solution2 = manhattenDistMax</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At the end, both solutions are printed out. Be patient, it takes around 20 seconds.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// print solution for part 1
+	println("******************************")
+	println("--- Day 19: Beacon Scanner ---")
+	println("******************************")
+	println("Solution for part1")
+	println("   $solution1 beacons are there")
+	println()
+	// print solution for part 2
+	println("******************************")
+	println("Solution for part2")
+	println("   $solution2 is the largest Manhattan distance between any two scanners")
+	println()
+	t1 = System.currentTimeMillis() - t1
+	println("puzzle solved in ${t1} ms")</code></pre>
+</div>
+</div>
+<a id="day20" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_20_kotlin"><a class="anchor" href="#_day_20_kotlin"></a><a class="link" href="#_day_20_kotlin">Day 20: kotlin</a></h3>
+<div class="sect3">
+<h4 id="_day_20_trench_map"><a class="anchor" href="#_day_20_trench_map"></a><a class="link" href="#_day_20_trench_map">Day 20: Trench Map</a></h4>
+<div class="paragraph">
+<p>This solution is written in Kotlin.</p>
+</div>
+<div class="paragraph">
+<p>The original puzzle can be found at <a href="https://adventofcode.com/2021/day/20" class="bare">https://adventofcode.com/2021/day/20</a></p>
+</div>
+<div class="paragraph">
+<p>For execution enter <em>kotlin day2120_1_2.kts</em> in the command line.</p>
+</div>
+<div class="sect4">
+<h5 id="_first_star_18"><a class="anchor" href="#_first_star_18"></a><a class="link" href="#_first_star_18">First Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>First of all puzzle input is read into <em>enhAlg</em> string for the ruleset and <em>inputImage</em> map for the first image</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	var width: Int = 0
+	var height: Int = 0
+
+	var enhAlg: String = ""
+
+	var inputImage = mutableMapOf&lt;Pair&lt;Int, Int&gt;, Int&gt;()
+
+
+	File("day2120_puzzle_input.txt").forEachLine {
+		if (it.length == 512) {
+			enhAlg = it
+		} else if (it.length != 0) {
+			width = it.length
+			for (x in 0..it.length - 1) {
+				var light: Int
+				if (it[x].toString() == ".") {
+					light = 0
+				} else {
+					light = 1
+				}
+				inputImage.put(Pair(x, height), light)
+			}
+			height = height + 1
+		}
+	}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After reading puzzle input, the enhancement algorithm is applied n times. After each time the lights which are on are conunted and at n == 2 solution for part 1 is available.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	var outputImage = mutableMapOf&lt;Pair&lt;Int, Int&gt;, Int&gt;()
+
+	for (n in 1..50) {
+		// iterate over input
+		var numLights = 0
+		for (y in 0 - 5 - n..height - 1 + n + 5) {
+			for (x in 0 - 5 - n..width - 1 + n + 5) {
+
+				var xpos = x
+				var ypos = y
+				var index: String = ""
+
+				// find index for each tile
+				for (yy in ypos - 1..ypos + 1) {
+					for (xx in xpos - 1..xpos + 1) {
+						if (inputImage.containsKey(Pair(xx, yy))) {
+							index = index + inputImage.getValue(Pair(xx, yy)).toString()
+						} else {
+							if (n % 2 == 0) {
+								index = index + "1"
+							} else {
+								index = index + "0"
+							}
+						}
+					}
+				}
+
+				// get value out of enhancedment algorithm and put Value in outputImage
+				if (enhAlg[index.toInt(2)] == '#') {
+					outputImage.put(Pair(x, y), 1)
+					numLights = numLights + 1
+					if (n == 2) {
+						solution1 = numLights
+					} else if (n == 50) {
+						solution2 = numLights
+					}
+				} else {
+					outputImage.put(Pair(x, y), 0)
+				}
+			}
+		}
+
+		inputImage.clear()
+		inputImage.putAll(outputImage)
+		outputImage.clear()
+	}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_second_star_18"><a class="anchor" href="#_second_star_18"></a><a class="link" href="#_second_star_18">Second Star</a></h5>
+<div class="paragraph">
+<p>How does it work:<br></p>
+</div>
+<div class="paragraph">
+<p>Just continue after n == 2 of part 1 until n reachd 50, then the counted lights are solution for part 2</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	var outputImage = mutableMapOf&lt;Pair&lt;Int, Int&gt;, Int&gt;()
+
+	for (n in 1..50) {
+		// iterate over input
+		var numLights = 0
+		for (y in 0 - 5 - n..height - 1 + n + 5) {
+			for (x in 0 - 5 - n..width - 1 + n + 5) {
+
+				var xpos = x
+				var ypos = y
+				var index: String = ""
+
+				// find index for each tile
+				for (yy in ypos - 1..ypos + 1) {
+					for (xx in xpos - 1..xpos + 1) {
+						if (inputImage.containsKey(Pair(xx, yy))) {
+							index = index + inputImage.getValue(Pair(xx, yy)).toString()
+						} else {
+							if (n % 2 == 0) {
+								index = index + "1"
+							} else {
+								index = index + "0"
+							}
+						}
+					}
+				}
+
+				// get value out of enhancedment algorithm and put Value in outputImage
+				if (enhAlg[index.toInt(2)] == '#') {
+					outputImage.put(Pair(x, y), 1)
+					numLights = numLights + 1
+					if (n == 2) {
+						solution1 = numLights
+					} else if (n == 50) {
+						solution2 = numLights
+					}
+				} else {
+					outputImage.put(Pair(x, y), 0)
+				}
+			}
+		}
+
+		inputImage.clear()
+		inputImage.putAll(outputImage)
+		outputImage.clear()
+	}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At the end, both solutions are printed out.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-kotlin" data-lang="kotlin">	// print solution for part 1
+	println("**************************")
+	println("--- Day 20: Trench Map ---")
+	println("**************************")
+	println("Solution for part1")
+	println("   $solution1 pixels are lit in the resulting image")
+	println()
+	// print solution for part 2
+	println("**************************")
+	println("Solution for part2")
+	println("   $solution2 pixels are lit in the resulting image")
 	println()</code></pre>
 </div>
 </div>

@@ -151,6 +151,7 @@
 <ul class="sectlevel4">
 <li><a href="#_general_structure">General structure</a></li>
 <li><a href="#_run_solutions">Run Solutions</a></li>
+<li><a href="#_personal_challenges">Personal Challenges</a></li>
 <li><a href="#_run_all_solutions">Run all Solutions</a></li>
 </ul>
 </li>
@@ -374,6 +375,39 @@
 <li><a href="#_part_2_13">Part 2</a></li>
 <li><a href="#_tests_17">Tests</a></li>
 <li><a href="#_thoughts">Thoughts</a></li>
+<li><a href="#_today_i_learned_9">Today I learned</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_19_rust">Day 19: rust</a>
+<ul class="sectlevel3">
+<li><a href="#_day_19_beacon_scanner">Day 19: Beacon Scanner</a>
+<ul class="sectlevel4">
+<li><a href="#_parts_1_2_2">Parts 1 &amp; 2</a></li>
+<li><a href="#_tests_18">Tests</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_20_rust">Day 20: rust</a>
+<ul class="sectlevel3">
+<li><a href="#_day_20_trench_map">Day 20: Trench Map</a>
+<ul class="sectlevel4">
+<li><a href="#_parts_1_2_3">Parts 1 &amp; 2</a></li>
+<li><a href="#_tests_19">Tests</a></li>
+<li><a href="#day20-til">Today I learned</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_day_21_rust">Day 21: rust</a>
+<ul class="sectlevel3">
+<li><a href="#_day_21_dirac_dice">Day 21: Dirac Dice</a>
+<ul class="sectlevel4">
+<li><a href="#_part_1_14">Part 1</a></li>
+<li><a href="#_part_2_14">Part 2</a></li>
+<li><a href="#_tests_20">Tests</a></li>
 </ul>
 </li>
 </ul>
@@ -437,10 +471,29 @@ development, e.g., based on the examples given in the puzzles.</p>
 <div class="sect4">
 <h5 id="_run_solutions"><a class="anchor" href="#_run_solutions"></a><a class="link" href="#_run_solutions">Run Solutions</a></h5>
 <div class="paragraph">
-<p>Run solution with <code>cargo run</code> (or <code>cargo run --release</code> to see the effect of compiler optimization)</p>
+<p>Run solution with <code>cargo run --release</code></p>
 </div>
 <div class="paragraph">
-<p>Run tests with <code>cargo test</code></p>
+<p>Run tests with <code>cargo test</code> or <code>cargo test --release</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_personal_challenges"><a class="anchor" href="#_personal_challenges"></a><a class="link" href="#_personal_challenges">Personal Challenges</a></h5>
+<div class="paragraph">
+<p>It is December 21st in the meantime. I got that far trying to</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Keep the overall time for all solutions as small as possible (&lt; 500ms would be great)</p>
+</li>
+<li>
+<p>Do not use anything but out of the box Rust</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see whether I can keep up with these constraints until the end.</p>
 </div>
 </div>
 <div class="sect4">
@@ -471,14 +524,20 @@ development, e.g., based on the examples given in the puzzles.</p>
     day16::solve();
     day17::solve();
     day18::solve();
-    // day19::solve();
-    // day20::solve();
-    // day21::solve();
-    // day22::solve();
-    // day23::solve();
-    // day24::solve();
-    // day25::solve();
-    println!("Total time: {:?}", timer.elapsed());
+    day19::solve();
+    day20::solve();
+    day21::solve();
+    // day22::solve(verbose);
+    // day23::solve(verbose);
+    // day24::solve(verbose);
+    // day25::solve(verbose);
+    let days = 21;
+    let elapsed = timer.elapsed();
+    let elapsed_per_day = elapsed.checked_div(days).unwrap();
+    println!(
+        "Total time for {} days: {:?} ({:?} per day)",
+        days, elapsed, elapsed_per_day
+    );
 }</code></pre>
 </div>
 </div>
@@ -4416,7 +4475,7 @@ mod tests {
 <p>Parse the snail numbers into vectors of tokens.</p>
 </li>
 <li>
-<p>Implement functions that aapply explode and split steps until no further reduction possible</p>
+<p>Implement functions that apply explode and split steps until no further reduction possible</p>
 </li>
 <li>
 <p>Calculate the sum over all snail numbers</p>
@@ -4458,12 +4517,13 @@ pub enum Token {
 ///   ],
 ///   parse("[[0,1],1]"));
 /// ```
+#[cfg(not(feature = "recursive"))]
 pub fn parse(content: &amp;str) -&gt; Vec&lt;Vec&lt;Token&gt;&gt; {
     content
         .lines()
         .map(|line| {
             line.chars()
-                .filter(|c| *c != ',')
+                .filter(|c| !c.is_whitespace() &amp;&amp; *c != ',')
                 .map(|c| match c {
                     '[' =&gt; Token::Op,
                     ']' =&gt; Token::Cl,
@@ -4484,12 +4544,12 @@ pub fn parse(content: &amp;str) -&gt; Vec&lt;Vec&lt;Token&gt;&gt; {
 <pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// perform single explode
 ///
 /// returns true if any explode performed, otherwise false
-pub fn explode(snailnumber: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
+pub fn explode(snail: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
     let mut level = 0;
     let mut last_val = 0;
     let mut number_seen = false;
-    for k in 0..snailnumber.len() {
-        match snailnumber[k] {
+    for k in 0..snail.len() {
+        match snail[k] {
             Token::Op =&gt; {
                 number_seen = false;
                 level += 1;
@@ -4500,49 +4560,29 @@ pub fn explode(snailnumber: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
             }
             Token::Val(val) =&gt; {
                 if number_seen &amp;&amp; level == 5 {
-                    let prev = (0..k - 2)
-                        .rev()
-                        .filter_map(|j| {
-                            if let Token::Val(v) = snailnumber[j] {
-                                Some((j, v))
-                            } else {
-                                None
-                            }
-                        })
-                        .next();
-                    if let Some((j, x)) = prev {
-                        snailnumber[j] = Token::Val(x + last_val);
+                    if let Some((j, x)) = (0..k - 2).rev().find_map(|j| {
+                        if let Token::Val(v) = snail[j] {
+                            Some((j, v))
+                        } else {
+                            None
+                        }
+                    }) {
+                        snail[j] = Token::Val(x + last_val);
                     }
 
-                    let next = (k + 2..snailnumber.len())
-                        .filter_map(|j| {
-                            if let Token::Val(v) = snailnumber[j] {
-                                Some((j, v))
-                            } else {
-                                None
-                            }
-                        })
-                        .next();
-                    if let Some((j, x)) = next {
-                        snailnumber[j] = Token::Val(x + val);
+                    if let Some((j, x)) = (k + 2..snail.len()).find_map(|j| {
+                        if let Token::Val(v) = snail[j] {
+                            Some((j, v))
+                        } else {
+                            None
+                        }
+                    }) {
+                        snail[j] = Token::Val(x + val);
                     }
 
-                    assert_eq!(
-                        Token::Cl,
-                        snailnumber.remove(k + 1),
-                        "Expected to remove close"
-                    );
-                    assert_eq!(
-                        Token::Val(val),
-                        snailnumber.remove(k),
-                        "Expected to remove 2nd number"
-                    );
-                    assert_eq!(
-                        Token::Val(last_val),
-                        snailnumber.remove(k - 1),
-                        "Expected to remove 1st number"
-                    );
-                    snailnumber[k - 2] = Token::Val(0);
+                    // remove elements k-1, k, k+1
+                    snail.drain(k - 1..k + 2);
+                    snail[k - 2] = Token::Val(0);
 
                     return true;
                 } else {
@@ -4562,30 +4602,24 @@ pub fn explode(snailnumber: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
 <pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// perform single split
 ///
 /// returns true if any split performed, otherwise false
-pub fn split(snailnumber: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
-    let find = snailnumber
-        .iter()
-        .enumerate()
-        .filter_map(|(k, e)| {
-            if let Token::Val(v) = e {
-                if v &gt; &amp;9 {
-                    Some((k, v))
-                } else {
-                    None
-                }
+pub fn split(snail: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
+    if let Some((k, v)) = snail.iter().enumerate().find_map(|(k, e)| {
+        if let Token::Val(v) = e {
+            if v &gt; &amp;9 {
+                Some((k, v))
             } else {
                 None
             }
-        })
-        .next();
-
-    if let Some((k, v)) = find {
-        let a = v / 2;
+        } else {
+            None
+        }
+    }) {
+        let a = v &gt;&gt; 1;
         let b = v - a;
-        snailnumber[k] = Token::Op;
-        snailnumber.insert(k + 1, Token::Val(a));
-        snailnumber.insert(k + 2, Token::Val(b));
-        snailnumber.insert(k + 3, Token::Cl);
+        snail.splice(
+            k..k + 1,
+            [Token::Op, Token::Val(a), Token::Val(b), Token::Cl],
+        );
 
         true
     } else {
@@ -4597,8 +4631,8 @@ pub fn split(snailnumber: &amp;mut Vec&lt;Token&gt;) -&gt; bool {
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// reduce snail number
-pub fn reduce(snailnumber: &amp;mut Vec&lt;Token&gt;) {
-    while explode(snailnumber) || split(snailnumber) {}
+pub fn reduce(snail: &amp;mut Vec&lt;Token&gt;) {
+    while explode(snail) || split(snail) {}
 }</code></pre>
 </div>
 </div>
@@ -4608,11 +4642,11 @@ pub fn reduce(snailnumber: &amp;mut Vec&lt;Token&gt;) {
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// calculate sum over snailnumbers at given indices
-pub fn sum(snailnumbers: &amp;[Vec&lt;Token&gt;], mut indices: impl Iterator&lt;Item = usize&gt;) -&gt; Vec&lt;Token&gt; {
-    let mut sum = snailnumbers[indices.next().expect("Empty indices")].to_owned();
+pub fn sum(snail: &amp;[Vec&lt;Token&gt;], mut indices: impl Iterator&lt;Item = usize&gt;) -&gt; Vec&lt;Token&gt; {
+    let mut sum = snail[indices.next().expect("Empty indices")].to_owned();
     for k in indices {
         sum.insert(0, Token::Op);
-        for e in &amp;snailnumbers[k] {
+        for e in &amp;snail[k] {
             sum.push(*e);
         }
         sum.push(Token::Cl);
@@ -4627,21 +4661,17 @@ pub fn sum(snailnumbers: &amp;[Vec&lt;Token&gt;], mut indices: impl Iterator&lt;
 <pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// recursively calculate magnitude for snailnumber at given position
 ///
 /// returns magnitude and position
-pub fn magnitude(snailnumber: &amp;[Token], k: usize) -&gt; (usize, usize) {
-    assert_eq!(Token::Op, snailnumber[k], "Do not start with open");
-
-    let (a, j) = match snailnumber[k + 1] {
-        Token::Op =&gt; magnitude(&amp;snailnumber, k + 1),
+pub fn magnitude(snail: &amp;[Token], k: usize) -&gt; (usize, usize) {
+    let (a, j) = match snail[k + 1] {
+        Token::Op =&gt; magnitude(&amp;snail, k + 1),
         Token::Val(v) =&gt; (v, k + 2),
         Token::Cl =&gt; panic!("Unexpected close tag at {}", k + 1),
     };
-    let (b, j) = match snailnumber[j] {
-        Token::Op =&gt; magnitude(&amp;snailnumber, j),
+    let (b, j) = match snail[j] {
+        Token::Op =&gt; magnitude(&amp;snail, j),
         Token::Val(v) =&gt; (v, j + 1),
         Token::Cl =&gt; panic!("Unexpected close tag at {}", j),
     };
-
-    assert_eq!(Token::Cl, snailnumber[j], "Do not end with close");
 
     (3 * a + 2 * b, j + 1)
 }</code></pre>
@@ -4656,15 +4686,16 @@ pub fn magnitude(snailnumber: &amp;[Token], k: usize) -&gt; (usize, usize) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">pub fn solution_2(snailnumbers: &amp;[Vec&lt;Token&gt;]) -&gt; usize {
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">#[cfg(not(feature = "recursive"))]
+pub fn solution_2(snails: &amp;[Vec&lt;Token&gt;]) -&gt; usize {
     let mut max = 0;
-    for k1 in 0..snailnumbers.len() {
-        for k2 in 0..snailnumbers.len() {
+    for k1 in 0..snails.len() {
+        for k2 in 0..snails.len() {
             if k1 == k2 {
                 continue;
             }
 
-            let sum = sum(snailnumbers, [k1, k2].into_iter());
+            let sum = sum(snails, [k1, k2].into_iter());
             let (m, _) = magnitude(&amp;sum, 0);
             if m &gt; max {
                 max = m;
@@ -4687,19 +4718,19 @@ mod tests {
 
     #[test]
     fn test_explode() {
-        let mut snailnumbers = parse("[[[[[9,8],1],2],3],4]\n[[[[0,9],2],3],4]");
-        assert!(explode(&amp;mut snailnumbers[0]), "Did not explode");
-        assert_eq!(snailnumbers[0], snailnumbers[1]);
+        let mut snails = parse("[[[[[9,8],1],2],3],4]\n[[[[0,9],2],3],4]");
+        assert!(explode(&amp;mut snails[0]), "Did not explode");
+        assert_eq!(snails[0], snails[1]);
 
-        let mut snailnumbers =
+        let mut snails =
             parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]\n[[[[0,7],4],[7,[[8,4],9]]],[1,1]]");
-        assert!(explode(&amp;mut snailnumbers[0]));
-        assert_eq!(snailnumbers[0], snailnumbers[1]);
+        assert!(explode(&amp;mut snails[0]));
+        assert_eq!(snails[0], snails[1]);
     }
 
     #[test]
     fn test_split() {
-        let mut snailnumbers = vec![
+        let mut snails = vec![
             vec![
                 Token::Op,
                 Token::Op,
@@ -4722,22 +4753,22 @@ mod tests {
                 Token::Cl,
             ],
         ];
-        assert!(split(&amp;mut snailnumbers[0]), "Did not split");
-        assert_eq!(snailnumbers[0], snailnumbers[1]);
+        assert!(split(&amp;mut snails[0]), "Did not split");
+        assert_eq!(snails[0], snails[1]);
     }
 
     #[test]
     fn test_reduce() {
-        let mut snailnumbers =
+        let mut snails =
             parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]\n[[[[0,7],4],[[7,8],[6,0]]],[8,1]]");
 
-        reduce(&amp;mut snailnumbers[0]);
-        assert_eq!(snailnumbers[0], snailnumbers[1]);
+        reduce(&amp;mut snails[0]);
+        assert_eq!(snails[0], snails[1]);
     }
 
     #[test]
     fn test_sum() {
-        let snailnumbers = parse(
+        let snails = parse(
             "[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
 [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
@@ -4750,7 +4781,7 @@ mod tests {
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]",
         );
 
-        let sum = sum(&amp;snailnumbers, 0..snailnumbers.len());
+        let sum = sum(&amp;snails, 0..snails.len());
         assert_eq!(
             parse("[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]")[0],
             sum
@@ -4759,10 +4790,10 @@ mod tests {
 
     #[test]
     fn test_magnitude() {
-        let snailnumbers = parse("[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]");
-        let (m, j) = magnitude(&amp;snailnumbers[0], 0);
+        let snails = parse("[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]");
+        let (m, j) = magnitude(&amp;snails[0], 0);
         assert_eq!(4140, m);
-        assert_eq!(snailnumbers[0].len(), j);
+        assert_eq!(snails[0].len(), j);
     }
 }</code></pre>
 </div>
@@ -4775,6 +4806,1030 @@ mod tests {
 </div>
 <div class="paragraph">
 <p>For now, the puzzle is solved. Not a solution I am particularly proud of. Specifically, I don&#8217;t like that it increases the overall runtime for all my solutions for this year so far by 40%!</p>
+</div>
+<div class="paragraph">
+<p>I have a solution based on recursive data structures. It is three times slower&#8230;&#8203; Made some small optimizations in the vec based solution instead (use <code>drain</code> and <code>splice</code> instead of removing/inserting values one by one - see above).</p>
+</div>
+<div class="paragraph">
+<p>The recursive solution is also available as a variant and you can run the recursive solution with <code>cargo run --release --features recursive</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">    #[derive(Clone, PartialEq, Eq)]
+    pub enum Snail {
+        Val(usize),
+        Pair(Box&lt;Snail&gt;, Box&lt;Snail&gt;),
+    }
+
+    impl fmt::Display for Snail {
+        fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+            match self {
+                Self::Val(v) =&gt; write!(f, "{}", v),
+                Self::Pair(lhs, rhs) =&gt; write!(f, "[{},{}]", lhs, rhs),
+            }
+        }
+    }
+
+    impl fmt::Debug for Snail {
+        fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+            match self {
+                Self::Val(v) =&gt; write!(f, "{}", v),
+                Self::Pair(lhs, rhs) =&gt; write!(f, "[{:?},{:?}]", lhs, rhs),
+            }
+        }
+    }
+
+    impl Snail {
+        /// parse a string representation of a snail number
+        ///
+        /// # Examples
+        /// ```
+        /// # use mr_kaffee_2021_18::recursive::*;
+        /// let snail = Snail::parse("[[1,2]\n, 3]");
+        /// assert_eq!("[[1,2],3]", format!("{}", snail));
+        /// ```
+        pub fn parse(data: &amp;str) -&gt; Self {
+            Self::parse_recursive(&amp;mut data.chars().filter(|c| !c.is_whitespace()).peekable())
+        }
+
+        fn parse_recursive(data: &amp;mut Peekable&lt;impl Iterator&lt;Item = char&gt;&gt;) -&gt; Self {
+            let token = data.next();
+            match token {
+                Some('[') =&gt; {
+                    let lhs = Self::parse_recursive(data);
+                    assert_eq!(Some(','), data.next());
+                    let rhs = Self::parse_recursive(data);
+                    assert_eq!(Some(']'), data.next());
+                    Self::Pair(Box::new(lhs), Box::new(rhs))
+                }
+                Some(c) if c &gt;= '0' &amp;&amp; c &lt;= '9' =&gt; {
+                    let mut v = c as usize - '0' as usize;
+                    while let Some(d) = data
+                        .peek()
+                        .filter(|c| c.is_ascii_digit())
+                        .map(|c| *c as usize - '0' as usize)
+                    {
+                        data.next();
+                        v = 10 * v + d;
+                    }
+                    Self::Val(v)
+                }
+                _ =&gt; panic!("Unexpected token: {:?}", token),
+            }
+        }
+
+        fn increment_first(&amp;mut self, inc: usize) {
+            match self {
+                Self::Pair(lhs, _) =&gt; {
+                    if let Self::Val(val) = *lhs.as_ref() {
+                        let _ = std::mem::replace(lhs, Box::new(Self::Val(val + inc)));
+                    } else {
+                        lhs.increment_first(inc);
+                    }
+                }
+                _ =&gt; {}
+            }
+        }
+
+        fn increment_last(&amp;mut self, inc: usize) {
+            match self {
+                Self::Pair(_, rhs) =&gt; {
+                    if let Self::Val(val) = *rhs.as_ref() {
+                        let _ = std::mem::replace(rhs, Box::new(Self::Val(val + inc)));
+                    } else {
+                        rhs.increment_last(inc);
+                    }
+                }
+                _ =&gt; {}
+            }
+        }
+
+        fn explode(&amp;mut self, level: usize) -&gt; (Option&lt;Self&gt;, Option&lt;(usize, usize)&gt;) {
+            match self {
+                Self::Val(_) =&gt; (None, None),
+                Self::Pair(lhs, rhs) =&gt; {
+                    if level == 4 {
+                        if let (Self::Val(a), Self::Val(b)) = (lhs.as_ref(), rhs.as_ref()) {
+                            (Some(Self::Val(0)), Some((*a, *b)))
+                        } else {
+                            (None, None)
+                        }
+                    } else if level &lt; 4 {
+                        if let (replace, Some((a, b))) = lhs.explode(level + 1) {
+                            if let Self::Val(val) = *rhs.as_ref() {
+                                // increment rhs with b
+                                let _ = std::mem::replace(rhs, Box::new(Self::Val(val + b)));
+                            } else {
+                                // increment first number in rhs with b
+                                rhs.increment_first(b);
+                            }
+
+                            if let Some(replace) = replace {
+                                // replace exploded value
+                                let _ = std::mem::replace(lhs, Box::new(replace));
+                            }
+                            (None, Some((a, 0)))
+                        } else if let (replace, Some((a, b))) = rhs.explode(level + 1) {
+                            if let Self::Val(val) = *lhs.as_ref() {
+                                // increment lhs with a
+                                let _ = std::mem::replace(lhs, Box::new(Self::Val(val + a)));
+                            } else {
+                                // increment last number in lhs with a
+                                lhs.increment_last(a);
+                            }
+
+                            if let Some(replace) = replace {
+                                // replace exploded value
+                                let _ = std::mem::replace(rhs, Box::new(replace));
+                            }
+
+                            (None, Some((0, b)))
+                        } else {
+                            (None, None)
+                        }
+                    } else {
+                        (None, None)
+                    }
+                }
+            }
+        }
+
+        fn split(&amp;mut self) -&gt; bool {
+            if let Self::Pair(lhs, rhs) = self {
+                if let Self::Val(val) = lhs.as_ref() {
+                    if val &gt; &amp;9 {
+                        let a = Box::new(Self::Val(val &gt;&gt; 1));
+                        let b = Box::new(Self::Val((val &gt;&gt; 1) + (val &amp; 1)));
+                        let _ = std::mem::replace(lhs, Box::new(Self::Pair(a, b)));
+                        return true;
+                    }
+                }
+                if lhs.split() {
+                    return true;
+                }
+                if let Self::Val(val) = rhs.as_ref() {
+                    if val &gt; &amp;9 {
+                        let a = Box::new(Self::Val(val &gt;&gt; 1));
+                        let b = Box::new(Self::Val((val &gt;&gt; 1) + (val &amp; 1)));
+                        let _ = std::mem::replace(rhs, Box::new(Self::Pair(a, b)));
+                        return true;
+                    }
+                }
+                return rhs.split();
+            }
+
+            false
+        }
+
+        pub fn reduce(&amp;mut self) {
+            loop {
+                let (_, r) = self.explode(0);
+                if r.is_none() &amp;&amp; !self.split() {
+                    break;
+                }
+            }
+        }
+
+        pub fn add(&amp;self, other: &amp;Snail) -&gt; Self {
+            let mut sum = Self::Pair(Box::new(self.clone()), Box::new(other.clone()));
+            sum.reduce();
+            sum
+        }
+
+        pub fn magnitude(&amp;self) -&gt; usize {
+            match self {
+                Self::Val(v) =&gt; *v,
+                Self::Pair(a, b) =&gt; 3 * a.magnitude() + 2 * b.magnitude(),
+            }
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_today_i_learned_9"><a class="anchor" href="#_today_i_learned_9"></a><a class="link" href="#_today_i_learned_9">Today I learned</a></h5>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>a lot on recursive data structures and the <code>Box</code> structure in Rust but also how to insert / remove elements from a <code>Vec</code> as efficiently as possible.</p>
+</li>
+</ol>
+</div>
+<a id="day19" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_19_rust"><a class="anchor" href="#_day_19_rust"></a><a class="link" href="#_day_19_rust">Day 19: rust</a></h3>
+<div class="sect3">
+<h4 id="_day_19_beacon_scanner"><a class="anchor" href="#_day_19_beacon_scanner"></a><a class="link" href="#_day_19_beacon_scanner">Day 19: Beacon Scanner</a></h4>
+<div class="paragraph">
+<p><a href="https://rust-lang.org">Rust</a> solution to <a href="https://adventofcode.com/2021/day/19">AoC|2021|19</a>.</p>
+</div>
+<div class="paragraph">
+<p>The solution for today&#8217;s puzzle takes ~180ms to complete in my current implementation (optimized from 30 seconds in the first version to ~10 and ~3 seconds in intermediate steps).</p>
+</div>
+<div class="paragraph">
+<p>The optimizations to get down to three seconds include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>check for the bounding box (scanner range) before looking up whether a specific beacon exists in another set</p>
+</li>
+<li>
+<p>use a kind of breadth first search for checking overlaps: start with first set, enqueue all sets which overlap with the first set (set <code>settled = 1</code>) and continue to settle furhter sets that overlap with sets from the queue.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The final optimization to achieve solution times below 1s are taken from <a href="https://github.com/mogron">[Moritz Gronbach</a>: The distances between beacons are invariant under coordinate transformations. So if two scanners have overlapping ranges, they must have at least 12 beacons which have to same distances to each other. Comparing those distances is much cheaper than looping through all the transformations and comparing coordinates.</p>
+</div>
+<div class="sect4">
+<h5 id="_parts_1_2_2"><a class="anchor" href="#_parts_1_2_2"></a><a class="link" href="#_parts_1_2_2">Parts 1 &amp; 2</a></h5>
+<div class="paragraph">
+<p>To keep the code clean, I created some shortcuts for 3D coordinates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// type alias for 3D coordinate
+pub type Coord = (isize, isize, isize);
+
+/// basic math operations for coordinates
+pub trait CoordMath {
+    fn add(self, rhs: &amp;Self) -&gt; Self;
+    fn sub(self, rhs: &amp;Self) -&gt; Self;
+    fn abs(&amp;self) -&gt; usize;
+}
+
+impl CoordMath for Coord {
+    fn add(mut self, rhs: &amp;Self) -&gt; Self {
+        self.0 += rhs.0;
+        self.1 += rhs.1;
+        self.2 += rhs.2;
+        self
+    }
+
+    fn sub(mut self, rhs: &amp;Self) -&gt; Self {
+        self.0 -= rhs.0;
+        self.1 -= rhs.1;
+        self.2 -= rhs.2;
+        self
+    }
+
+    fn abs(&amp;self) -&gt; usize {
+        (self.0.abs() + self.1.abs() + self.2.abs()) as usize
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The input is read as follows (create sets of beacons and maps of pairwise distances):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// parse the input into a vector of scanners
+///
+/// each scanner is a hash set of coordinates in the scanner's local
+/// coordinate system and a hashmap of pairwise distances as keys and number of
+/// occurance of this distance as value
+pub fn parse(content: &amp;str) -&gt; Vec&lt;(HashSet&lt;Coord&gt;, HashMap&lt;usize, usize&gt;)&gt; {
+    let mut scanners: Vec&lt;(HashSet&lt;Coord&gt;, HashMap&lt;usize, usize&gt;)&gt; = Vec::new();
+
+    let mut beacons = HashSet::new();
+    let mut distances = HashMap::new();
+    for line in content.lines().map(|l| l.trim()).filter(|l| l.len() &gt; 0) {
+        if line.starts_with("---") {
+            if !beacons.is_empty() {
+                scanners.push((beacons, distances));
+                beacons = HashSet::new();
+                distances = HashMap::new();
+            }
+        } else {
+            let mut parts = line.split(',');
+            let b_new = (
+                parts.next().unwrap().parse().unwrap(),
+                parts.next().unwrap().parse().unwrap(),
+                parts.next().unwrap().parse().unwrap(),
+            );
+            for b_old in &amp;beacons {
+                // update pairwise distances
+                *distances.entry(b_old.sub(&amp;b_new).abs()).or_insert(0) += 1;
+            }
+            beacons.insert(b_new);
+        }
+    }
+    if !beacons.is_empty() {
+        scanners.push((beacons, distances));
+    }
+
+    scanners
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then I define all 24 possible transformations with inverse transformations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// transformation functions for all 24 possible transformations
+pub const TRAFOS: [fn(Coord) -&gt; Coord; 24] = [
+    |(x, y, z)| (x, y, z),
+    |(x, y, z)| (x, -y, -z),
+    |(x, y, z)| (x, z, -y),
+    |(x, y, z)| (x, -z, y),
+    |(x, y, z)| (-x, y, -z),
+    |(x, y, z)| (-x, -y, z),
+    |(x, y, z)| (-x, z, y),
+    |(x, y, z)| (-x, -z, -y),
+    |(x, y, z)| (y, x, -z),
+    |(x, y, z)| (y, -x, z),
+    |(x, y, z)| (y, z, x),
+    |(x, y, z)| (y, -z, -x),
+    |(x, y, z)| (-y, x, z),
+    |(x, y, z)| (-y, -x, -z),
+    |(x, y, z)| (-y, z, -x),
+    |(x, y, z)| (-y, -z, x),
+    |(x, y, z)| (z, x, y),
+    |(x, y, z)| (z, -x, -y),
+    |(x, y, z)| (z, y, -x),
+    |(x, y, z)| (z, -y, x),
+    |(x, y, z)| (-z, x, -y),
+    |(x, y, z)| (-z, -x, y),
+    |(x, y, z)| (-z, y, x),
+    |(x, y, z)| (-z, -y, -x),
+];
+
+/// inverse transformation functions for all 24 possible transformations
+pub const INV_TRAFOS: [fn(Coord) -&gt; Coord; 24] = [
+    |(x, y, z)| (x, y, z),
+    |(x, y, z)| (x, -y, -z),
+    |(x, y, z)| (x, -z, y),
+    |(x, y, z)| (x, z, -y),
+    |(x, y, z)| (-x, y, -z),
+    |(x, y, z)| (-x, -y, z),
+    |(x, y, z)| (-x, z, y),
+    |(x, y, z)| (-x, -z, -y),
+    |(x, y, z)| (y, x, -z),
+    |(x, y, z)| (-y, x, z),
+    |(x, y, z)| (z, x, y),
+    |(x, y, z)| (-z, x, -y),
+    |(x, y, z)| (y, -x, z),
+    |(x, y, z)| (-y, -x, -z),
+    |(x, y, z)| (-z, -x, y),
+    |(x, y, z)| (z, -x, -y),
+    |(x, y, z)| (y, z, x),
+    |(x, y, z)| (-y, -z, x),
+    |(x, y, z)| (-z, y, x),
+    |(x, y, z)| (z, -y, x),
+    |(x, y, z)| (y, -z, -x),
+    |(x, y, z)| (-y, z, -x),
+    |(x, y, z)| (z, y, -x),
+    |(x, y, z)| (-z, -y, -x),
+];</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The transformations are used to figure out whether two scanner&#8217;s ranges (two sets of beacons in their own coordinate systems) overlap:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// check whether two sets of beacons overlap
+///
+/// find the transformation ``t`` for the ``beacons_check`` set, and the ``center`` position
+/// of the corresponding scanner in the ``beacons_settled``'s coordinate system so that at
+/// least ``threshold`` pairs of beacons (b1, b2) in the two sets exist that satisfy
+/// ``t(b2) - center = b1``
+///
+/// return the transformation ``t`` and the ``center`` position
+pub fn check_overlap(
+    (beacons_settled, distances_settled): &amp;(HashSet&lt;Coord&gt;, HashMap&lt;usize, usize&gt;),
+    (beacons_check, distances_check): &amp;(HashSet&lt;Coord&gt;, HashMap&lt;usize, usize&gt;),
+    threshold: usize,
+) -&gt; Option&lt;(fn(Coord) -&gt; Coord, Coord)&gt; {
+    // first check pairwise distances (idea taken from Moritz Gronbach, https://github.com/mogron)
+    let mut common_distances = 0;
+    for (distance, count) in distances_settled {
+        common_distances += cmp::min(distances_check.get(distance).unwrap_or(&amp;0), count);
+        if common_distances &gt;= threshold * (threshold - 1) / 2 {
+            break;
+        }
+    }
+    if common_distances &lt; threshold * (threshold - 1) / 2 {
+        return None; // not enough common distances, no overlap possible
+    }
+
+    for t_idx in 0..24 {
+        // find all beacons with the same distance as b1[k1] to b2[k2]
+        for b1 in beacons_settled {
+            for b2 in beacons_check {
+                // center = t(b2) - b1
+                // =&gt; b1 = t(b2) - center
+                let center = TRAFOS[t_idx](*b2).sub(b1);
+
+                // filter for scanner range prior to lookup
+                // settled beacons are in transformed coordinate (scanner is not necessarily at origin)
+                // =&gt; need to check range in beacons_check via inverse transform
+                // (possible optimization: use actual bounding box of beacons)
+                let mut count = 0;
+                for _ in beacons_settled
+                    .iter()
+                    .map(|b1| INV_TRAFOS[t_idx](b1.add(&amp;center)))
+                    .filter(|(x, y, z)| RANGE.contains(x) &amp;&amp; RANGE.contains(y) &amp;&amp; RANGE.contains(z))
+                    .filter(|b1| beacons_check.contains(b1))
+                {
+                    // don't use iter.count() to avoid checking more elements once threshold is reached
+                    count += 1;
+                    if count &gt;= threshold {
+                        return Some((TRAFOS[t_idx], center));
+                    }
+                }
+            }
+        }
+    }
+
+    None // no solution found
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With these elements, the solution to both parts is calculated as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// determine number of unique beacons and max Manhatten distance between
+/// any two scanners
+pub fn solution_1_2(scanners: &amp;[(HashSet&lt;Coord&gt;, HashMap&lt;usize, usize&gt;)]) -&gt; (usize, usize) {
+    // use my own mutable copy of the scanners
+    let mut scanners = scanners.to_owned();
+
+    // holds flags for settled scanners
+    // 0 - not settled
+    // 1 - settled, enqueued for furhter extension of settled scanners
+    // 2 - fully processed (dequeued)
+    let mut settled = vec![0; scanners.len()];
+    settled[0] = 1u8; // start with first scanner settled
+
+    // holds scanner coordinates in the coordinate system of the settled scanners.
+    // Used to calculate largest distance between any two scanners.
+    let mut centers = Vec::with_capacity(scanners.len());
+    centers.push((0, 0, 0)); // first scanner's position (= reference)
+    let mut max_dist = 0;
+
+    // holds all settled beacons. Start with beacons in range of scanner 1
+    let mut beacons: HashSet&lt;Coord&gt; = scanners[0].0.clone();
+
+    while let Some(k1) = settled.iter().position(|s| s == &amp;1) {
+        for k2 in 0..settled.len() {
+            if settled[k2] != 0 {
+                continue; // already settled
+            }
+
+            if let Some((t, c)) = check_overlap(&amp;scanners[k1], &amp;scanners[k2], 12) {
+                // update scanner to settled coordinates
+                scanners[k2].0 = scanners[k2].0.iter().map(|b| t(*b).sub(&amp;c)).collect();
+
+                // add beacons to unique set
+                beacons.extend(&amp;scanners[k2].0);
+
+                // update settled to 1 = enqueue
+                settled[k2] = 1;
+
+                // update max distance
+                for c_settled in &amp;centers {
+                    let dist = c.sub(&amp;c_settled).abs();
+                    if dist &gt; max_dist {
+                        max_dist = dist;
+                    }
+                }
+
+                // add center
+                centers.push(c);
+            }
+        }
+
+        // update settled to 2 = fully processed
+        settled[k1] = 2;
+    }
+
+    // return number of beacons and largest distance between any two scanners
+    (beacons.len(), max_dist)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_tests_18"><a class="anchor" href="#_tests_18"></a><a class="link" href="#_tests_18">Tests</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const CONTENT: &amp;str = include_str!("../test.txt");
+
+    #[test]
+    fn test_parse() {
+        let scanners = parse(CONTENT);
+        assert_eq!(5, scanners.len());
+        assert!(scanners[2].0.contains(&amp;(-644, 584, -595)));
+        assert!(scanners[4].0.contains(&amp;(30, -46, -14)));
+    }
+
+    #[test]
+    fn test_compare() {
+        let scanners = parse(CONTENT);
+        let r = check_overlap(&amp;scanners[0], &amp;scanners[1], 12);
+        assert!(r.is_some(), "No transformation found");
+        let (t, d) = r.unwrap();
+
+        assert_eq!((-68, 1246, 43), d);
+        assert_eq!((-618, -824, -621), t((686, 422, 578)).sub(&amp;d));
+    }
+
+    #[test]
+    fn test_solution_1_2() {
+        let scanners = parse(CONTENT);
+        assert_eq!((79, 3621), solution_1_2(&amp;scanners));
+    }
+
+    #[test]
+    fn test_trafos() {
+        for k in 0..24 {
+            assert_eq!(
+                (1, 2, 3),
+                TRAFOS[k](INV_TRAFOS[k]((1, 2, 3))),
+                "Failed trafo after inverse at {}",
+                k
+            );
+            assert_eq!(
+                (1, 2, 3),
+                INV_TRAFOS[k](TRAFOS[k]((1, 2, 3))),
+                "Failed inverse after trafo at {}",
+                k
+            );
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<a id="day20" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_20_rust"><a class="anchor" href="#_day_20_rust"></a><a class="link" href="#_day_20_rust">Day 20: rust</a></h3>
+<div class="sect3">
+<h4 id="_day_20_trench_map"><a class="anchor" href="#_day_20_trench_map"></a><a class="link" href="#_day_20_trench_map">Day 20: Trench Map</a></h4>
+<div class="paragraph">
+<p><a href="https://rust-lang.org">Rust</a> solution to <a href="https://adventofcode.com/2021/day/20">AoC|2021|20</a>.</p>
+</div>
+<div class="paragraph">
+<p>There is essentially one trap in today&#8217;s puzzle hidden in the instruction <em>&#8230;&#8203; being careful to account for the infinite size of the images</em>: while in the test data, the algorithm starts with <code>.</code>, my (and I guess everyone else&#8217;s) puzzle input&#8217;s algorithm starts with <code>#</code>. Hence, after applying the algorithm once, all pixels extending forever in any direction are set. To handle this, I store the negative of an image in that case. All images produced by odd numbers of update steps will actually be negative images.</p>
+</div>
+<div class="sect4">
+<h5 id="_parts_1_2_3"><a class="anchor" href="#_parts_1_2_3"></a><a class="link" href="#_parts_1_2_3">Parts 1 &amp; 2</a></h5>
+<div class="paragraph">
+<p>I store images in an <code>Image</code> structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// structure storing image data
+///
+/// * ``data`` is a list of all set pixels
+/// * ``bbox = (x_min, x_max, y_min, y_max)`` is the bounding box of set pixels
+///   with exclusive upper bounds
+/// * ``neg`` is a flag indicating whether pixels are inverted (i.e., this is a
+///   negative image)
+#[derive(Debug, Clone)]
+pub struct Image {
+    pub data: Vec&lt;(isize, isize)&gt;,
+    pub bbox: (isize, isize, isize, isize),
+    pub neg: bool,
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>I use this to parse the input into an algorithm (vector of booleans) and an image:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// parse content in algorithm (first line) and image (other non blank lines)
+pub fn parse(content: &amp;str) -&gt; (Vec&lt;bool&gt;, Image) {
+    let mut lines = content.lines();
+    let algo = lines
+        .next()
+        .expect("No algo")
+        .trim()
+        .chars()
+        .map(|c| c == '#')
+        .collect::&lt;Vec&lt;_&gt;&gt;();
+
+    // if algo[0] is set, all pixels extendig in any direction are lit after the first step
+    // to ensure a finite number of pixels is lit after an odd number of steps, the last element
+    // of the algorithm must not be set
+    assert!(
+        !algo[0] || !algo[algo.len() - 1],
+        "Algorithm will lit infinitely many pixels forever"
+    );
+
+    let mut data = Vec::new();
+    let mut bbox = (isize::MAX, isize::MAX, isize::MIN, isize::MIN);
+    let neg = false;
+    for (y, line) in lines
+        .map(|line| line.trim())
+        .filter(|line| line.len() &gt; 0)
+        .enumerate()
+    {
+        for (x, _) in line.chars().enumerate().filter(|(_, c)| c == &amp;'#') {
+            data.push((x as isize, y as isize));
+            bbox.0 = cmp::min(bbox.0, x as isize);
+            bbox.1 = cmp::min(bbox.1, y as isize);
+            bbox.2 = cmp::max(bbox.2, x as isize + 1);
+            bbox.3 = cmp::max(bbox.3, y as isize + 1);
+        }
+    }
+
+    (algo, Image { data, bbox, neg })
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The main part of the solution is a function that performs single update steps (see <a href="#day20-til">Today I learned</a> for an explanation on why I create the intermediate <code>grid</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// perform single update step
+///
+/// create a new image; if ``algo[0]`` is set, the ``neg`` flag of the image will flip
+pub fn update_step(algo: &amp;[bool], image: &amp;Image) -&gt; Image {
+    let mut data = Vec::with_capacity(image.data.len() * 2);
+    let mut bbox = (isize::MAX, isize::MAX, isize::MIN, isize::MIN);
+    let neg = algo[0] ^ image.neg;
+
+    // it is cheaper to put everything in a grid compared to looking up values repeatedly
+    // in a set or map
+    // make the grid big enough to not have to check out of bounds in loop later on
+    let (x_mn, y_mn, x_mx, y_mx) = image.bbox;
+    let x0 = x_mn - 2;
+    let y0 = y_mn - 2;
+    let w = (x_mx - x_mn) as usize + 4;
+    let h = (y_mx - y_mn) as usize + 4;
+    let mut grid = vec![false; w * h];
+    for (x, y) in &amp;image.data {
+        grid[(x - x0) as usize + w * (y - y0) as usize] = true;
+    }
+
+    for x in x_mn - 1..x_mx + 1 {
+        for y in y_mn - 1..y_mx + 1 {
+            let k = (x - x0) as usize + w * (y - y0) as usize;
+            let mut idx = 0;
+            for j in [
+                k - w - 1,
+                k - w,
+                k - w + 1,
+                k - 1,
+                k,
+                k + 1,
+                k + w - 1,
+                k + w,
+                k + w + 1,
+            ] {
+                idx = idx &lt;&lt; 1 | (image.neg ^ grid[j]) as usize;
+            }
+            if neg ^ algo[idx] {
+                data.push((x, y));
+                bbox.0 = cmp::min(bbox.0, x);
+                bbox.1 = cmp::min(bbox.1, y);
+                bbox.2 = cmp::max(bbox.2, x + 1);
+                bbox.3 = cmp::max(bbox.3, y + 1);
+            }
+        }
+    }
+
+    Image { data, bbox, neg }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The solution is calculated as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">pub fn update_steps(algo: &amp;[bool], image: &amp;Image, steps: usize) -&gt; Image {
+    assert!(steps &gt;= 1, "Cannot perform less than one update step");
+    let mut image = update_step(&amp;algo, image);
+    for _ in 1..steps {
+        image = update_step(algo, &amp;image);
+    }
+    image
+}
+
+pub fn solution_1(algo: &amp;[bool], image: &amp;Image) -&gt; usize {
+    update_steps(algo, image, 2).data.len()
+}
+pub fn solution_2(algo: &amp;[bool], image: &amp;Image) -&gt; usize {
+    update_steps(algo, image, 50).data.len()
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_tests_19"><a class="anchor" href="#_tests_19"></a><a class="link" href="#_tests_19">Tests</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const CONTENT: &amp;str =
+        "..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..##\
+        #..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###\
+        .######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#.\
+        .#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#.....\
+        .#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#..\
+        ...####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.....\
+        ..##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#\n\
+        \
+        #..#.\n\
+        #....\n\
+        ##..#\n\
+        ..#..\n\
+        ..###";
+
+    #[test]
+    fn test_parse() {
+        let (algo, image) = parse(CONTENT);
+        assert_eq!(512, algo.len());
+        assert_eq!((0, 0, 5, 5), image.bbox);
+        assert_eq!(
+            Vec::from([
+                (0, 0),
+                (3, 0),
+                (0, 1),
+                (0, 2),
+                (1, 2),
+                (4, 2),
+                (2, 3),
+                (2, 4),
+                (3, 4),
+                (4, 4)
+            ]),
+            image.data
+        );
+        assert!(!image.neg);
+    }
+
+    #[test]
+    fn test_update_steps() {
+        let (algo, image) = parse(CONTENT);
+        assert_eq!(35, update_steps(&amp;algo, &amp;image, 2).data.len());
+        assert_eq!(3_351, update_steps(&amp;algo, &amp;image, 50).data.len());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="day20-til"><a class="anchor" href="#day20-til"></a><a class="link" href="#day20-til">Today I learned</a></h5>
+<div class="paragraph">
+<p>Today I learned a lot about performance.</p>
+</div>
+<div class="paragraph">
+<p>In my first version, I stored the lit pixels of the image in a hash set with <code>HashSet::contains</code> calls in the nested loop in my <code>update_step</code> function. Building a <code>grid</code> for direct lookup and replacing the hash set by a vector reduced the runtime for my solution (both parts) from ~500ms to ~25ms by a factor of 20! Pretty impressive.</p>
+</div>
+<a id="day21" />
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_day_21_rust"><a class="anchor" href="#_day_21_rust"></a><a class="link" href="#_day_21_rust">Day 21: rust</a></h3>
+<div class="sect3">
+<h4 id="_day_21_dirac_dice"><a class="anchor" href="#_day_21_dirac_dice"></a><a class="link" href="#_day_21_dirac_dice">Day 21: Dirac Dice</a></h4>
+<div class="paragraph">
+<p><a href="https://rust-lang.org">Rust</a> solution to <a href="https://adventofcode.com/2021/day/21">AoC|2021|21</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="_part_1_14"><a class="anchor" href="#_part_1_14"></a><a class="link" href="#_part_1_14">Part 1</a></h5>
+<div class="paragraph">
+<p>Part 1 is pretty straight forward:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// play with a deterministic dice, winning threshold: 1000
+///
+/// return the looser's score times the number the dice was thrown
+pub fn solution_1((mut p1, mut p2): (usize, usize)) -&gt; usize {
+    let mut s1 = 0;
+    let mut s2 = 0;
+
+    let mut dice = 0;
+
+    let mut t = true;
+    while s1 &lt; 1000 &amp;&amp; s2 &lt; 1000 {
+        if t {
+            p1 = (p1 + 3 * dice + 6 - 1) % 10 + 1;
+            s1 += p1;
+        } else {
+            p2 = (p2 + 3 * dice + 6 - 1) % 10 + 1;
+            s2 += p2;
+        }
+
+        dice += 3;
+        t = !t;
+    }
+
+    dice * cmp::min(s1, s2)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_part_2_14"><a class="anchor" href="#_part_2_14"></a><a class="link" href="#_part_2_14">Part 2</a></h5>
+<div class="paragraph">
+<p>For part 2, my first attempt was to use a depth first traversal through play states. I push play states with multiplicities on a stack.</p>
+</div>
+<div class="paragraph">
+<p>Each state popped from the stack results in 7 new states for the seven different outcomes of throwing a 3-sided dice three times: (1 x 3, 3 x 4, 6 x 5, 7 x 6, 6 x 7, 3 x 8, 1 x 9).</p>
+</div>
+<div class="paragraph">
+<p>If a state is a win for either player, the win counter is increased. Otherwise the new state with the new multiplicity is pushed to the stack.</p>
+</div>
+<div class="paragraph">
+<p>I came up with the idea quite quickly. Still took some time to finish part 2 because of a stupid bug: I updated position and score for the 2nd, 3rd, &#8230;&#8203; outcome of throwing a dice not based on the current state but based on the 1st, 2nd, &#8230;&#8203; outcome of throwing a dice&#8230;&#8203;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">/// 7 possible outcomes with three dice
+///
+/// * 3 - 1: (1 1 1)
+/// * 4 - 3: (1 1 2) (1 2 1) (2 1 1)
+/// * 5 - 6: (1 1 3) (1 2 2) (1 3 1) (2 1 2) (2 2 1) (3 1 1)
+/// * 6 - 7: (1 2 3) (1 3 2) (2 1 3) (2 2 2) (2 3 1) (3 1 2) (3 2 1)
+/// * 7 - 6: (1 3 3) (2 2 3) (2 3 2) (3 1 3) (3 2 2) (3 3 1)
+/// * 8 - 3: (2 3 3) (3 2 3) (3 3 2)
+/// * 9 - 1: (3 3 3)
+pub const DICE_MULTS: [(usize, usize); 7] =
+    [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)];
+
+#[cfg(feature = "stack")]
+/// play with dirac quantum dice (stack based)
+///
+/// return the number of universes won by the player who wins more often
+pub fn solution_2((p1, p2): (usize, usize)) -&gt; usize {
+    // push states with multiplicty on stack
+    // since I push to the end and pop from the end, this is depth first search
+    let mut stack = Vec::new();
+    stack.push((p1, p2, 0, 0, true, 1));
+
+    // win counts
+    let mut w1 = 0;
+    let mut w2 = 0;
+
+    // while there are unprocessed states
+    while let Some((p1, p2, s1, s2, t, mult)) = stack.pop() {
+        // loop over dice outcomes with multiplicity
+        for (v, n) in DICE_MULTS {
+            if t {
+                // player 1's turn
+                // update position and score
+                let p1_upd = (p1 + v - 1) % 10 + 1;
+                let s1_upd = s1 + p1_upd;
+                if s1_upd &gt;= 21 {
+                    // win
+                    w1 += n * mult;
+                } else {
+                    // continue to play later
+                    stack.push((p1_upd, p2, s1_upd, s2, false, n * mult));
+                }
+            } else {
+                // player 2's turn
+                // update position and score
+                let p2_upd = (p2 + v - 1) % 10 + 1;
+                let s2_upd = s2 + p2_upd;
+                if s2_upd &gt;= 21 {
+                    // win
+                    w2 += n * mult;
+                } else {
+                    // continue to play later
+                    stack.push((p1, p2_upd, s1, s2_upd, true, n * mult));
+                }
+            }
+        }
+    }
+
+    cmp::max(w1, w2)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Looking at the solution a bit closer, I figured out, that there are a total of 88200 different play states possible (10 positions per player times 21 scores per player times 2 because for each positions / scores it might be player 1&#8217;s or player 2&#8217;s turn). Yet, my stack based solution processes ~17 million items from the stack, i.e,. each state more than 200 times. There seems to be potential for optimization.</p>
+</div>
+<div class="paragraph">
+<p>I created a second solution which is based on a flat list of multiplicities for every possible state. I processes each state sorted by total score of both players. Because the total score increases in every round played, I am sure that a state processed once will never occur again. Here is my second solution:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">#[cfg(not(feature = "stack"))]
+/// play with dirac quantum dice (state list based)
+///
+/// return the number of universes won by the player who wins more often
+pub fn solution_2((p1, p2): (usize, usize)) -&gt; usize {
+    // index to state multiplicity list
+    const F_IDX: fn(usize, usize, usize, usize, usize) -&gt; usize =
+        |p1, p2, s1, s2, t| p1 + 10 * p2 + 100 * s1 + 2100 * s2 + 44100 * t;
+
+    // state multiplicity list
+    let mut mults = vec![0; 10 * 10 * 21 * 21 * 2];
+
+    // insert at pos_1 - 1 and pos_2 - 1 because position is zero based internally
+    mults[F_IDX(p1 - 1, p2 - 1, 0, 0, 0)] = 1;
+
+    // win counts
+    let mut w1 = 0;
+    let mut w2 = 0;
+
+    for sum in 0..=40 {
+        for s1 in if sum &gt; 20 { sum - 20..=20 } else { 0..=sum } {
+            let s2 = sum - s1;
+
+            for p1 in 0..10 {
+                for p2 in 0..10 {
+                    let mult_1 = mults[F_IDX(p1, p2, s1, s2, 0)];
+                    let mult_2 = mults[F_IDX(p1, p2, s1, s2, 1)];
+
+                    if mult_1 == 0 &amp;&amp; mult_2 == 0 {
+                        continue; // don't loop if no need
+                    }
+
+                    for (v, n) in DICE_MULTS {
+                        let p1_upd = (p1 + v) % 10;
+                        let s1_upd = s1 + p1_upd + 1;
+                        if s1_upd &gt;= 21 {
+                            w1 += mult_1 * n;
+                        } else {
+                            mults[F_IDX(p1_upd, p2, s1_upd, s2, 1)] += mult_1 * n;
+                        }
+
+                        let p2_upd = (p2 + v) % 10;
+                        let s2_upd = s2 + p2_upd + 1;
+                        if s2_upd &gt;= 21 {
+                            w2 += mult_2 * n;
+                        } else {
+                            mults[F_IDX(p1, p2_upd, s1, s2_upd, 0)] += mult_2 * n;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    cmp::max(w1, w2)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Quick runtime comparison:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Stack based solution: ~450ms</p>
+</li>
+<li>
+<p>List based solution: ~3ms</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>List based is faster by a factor 150!</p>
+</div>
+<div class="paragraph">
+<p>Hence, list based is my default ;)</p>
+</div>
+<div class="paragraph">
+<p>If you still want to run the stack based solution, you can do so with <code>cargo run --release --features stack</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_tests_20"><a class="anchor" href="#_tests_20"></a><a class="link" href="#_tests_20">Tests</a></h5>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight linenums"><code class="language-rust" data-lang="rust">#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_play_deterministic() {
+        assert_eq!(739_785, solution_1((4, 8)))
+    }
+
+    #[test]
+    fn test_play_dirac() {
+        assert_eq!(444_356_092_776_315, solution_2((4, 8)))
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
